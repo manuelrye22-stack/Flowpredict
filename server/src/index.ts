@@ -41,14 +41,20 @@ app.get('/', (req, res) => {
   res.send('FlowPredict API is live! Use /api/health for status.')
 })
 
-app.use('/api/auth', authRoutes)
-app.use('/api/wallet', walletRoutes)
-app.use('/api/bets', betsRoutes)
-app.use('/api/users', userRoutes)
-app.use('/api/transactions', transactionRoutes)
-app.use('/api/ratings', ratingRoutes)
-app.use('/api/verification', verificationRoutes)
-app.use('/api/comments', commentRoutes)
+// Mount routes on both /api and root for maximum compatibility
+const mountRoutes = (path: string, router: any) => {
+  app.use(path, router)
+  app.use(path.replace('/api', ''), router)
+}
+
+mountRoutes('/api/auth', authRoutes)
+mountRoutes('/api/wallet', walletRoutes)
+mountRoutes('/api/bets', betsRoutes)
+mountRoutes('/api/users', userRoutes)
+mountRoutes('/api/transactions', transactionRoutes)
+mountRoutes('/api/ratings', ratingRoutes)
+mountRoutes('/api/verification', verificationRoutes)
+mountRoutes('/api/comments', commentRoutes)
 
 app.get('/api/health', (req, res) => {
   res.json({ 
@@ -60,10 +66,19 @@ app.get('/api/health', (req, res) => {
   })
 })
 
-// Request logger middleware
+// Request logger middleware (moved up to catch all requests)
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`)
   next()
+})
+
+// 404 Debugging middleware
+app.use((req, res) => {
+  console.warn(`⚠️ 404 Not Found: ${req.method} ${req.url}`)
+  res.status(404).json({ 
+    message: `Route ${req.method} ${req.url} not found on this server.`,
+    availablePaths: ['/api/auth', '/auth', '/api/health']
+  })
 })
 
 // Start listening immediately
