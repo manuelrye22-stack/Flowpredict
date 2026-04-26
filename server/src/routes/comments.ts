@@ -31,8 +31,8 @@ router.get('/:betId', authenticate, async (req: Request, res: Response) => {
     const formatted = comments.map(c => ({
       _id: c._id,
       content: c.content,
-      email: c.userId?.email?.split('@')[0],
-      createdAt: c.createdAt,
+      email: (c.userId as any)?.email?.split('@')[0],
+      createdAt: (c as any).createdAt,
     }))
     
     res.json(formatted)

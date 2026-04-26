@@ -1,6 +1,3 @@
-import dns from 'dns'
-dns.setServers(['8.8.8.8', '8.8.4.4'])
-
 import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
@@ -23,11 +20,26 @@ import { startWithdrawalProcessor } from './services/withdrawalProcessor.js'
 
 dotenv.config()
 
-const app = express()
-const PORT = process.env.PORT || 3001
+console.log('Starting FlowPredict API server...')
+console.log('Environment PORT:', process.env.PORT)
 
-app.use(cors())
+const app = express()
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001
+
+// Robust CORS configuration
+app.use(cors({
+  origin: '*', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
+  credentials: true
+}))
+
 app.use(express.json())
+
+// Root handler for basic health check and Railway deployment verification
+app.get('/', (req, res) => {
+  res.send('FlowPredict API is live! Use /api/health for status.')
+})
 
 app.use('/api/auth', authRoutes)
 app.use('/api/wallet', walletRoutes)
@@ -39,7 +51,24 @@ app.use('/api/verification', verificationRoutes)
 app.use('/api/comments', commentRoutes)
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'FlowPredict API running' })
+  res.json({ 
+    status: 'ok', 
+    message: 'FlowPredict API running',
+    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    timestamp: new Date().toISOString(),
+    env: process.env.NODE_ENV || 'development'
+  })
+})
+
+// Request logger middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`)
+  next()
+})
+
+// Start listening immediately
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server listening on 0.0.0.0:${PORT}`)
 })
 
 // Auto-resolve expired bets every hour
@@ -134,22 +163,21 @@ cron.schedule('0 * * * *', async () => {
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/flowpredict'
 
-console.log('MongoDB URI:', MONGODB_URI.substring(0, 30) + '...')
+console.log('Connecting to MongoDB...')
+// console.log('MongoDB URI:', MONGODB_URI.substring(0, 30) + '...')
 
 mongoose.connect(MONGODB_URI, {
   serverSelectionTimeoutMS: 10000,
   socketTimeoutMS: 45000,
 })
   .then(() => {
-    console.log('Connected to MongoDB')
+    console.log('✅ Connected to MongoDB')
     startDepositWatcher()
     startWithdrawalProcessor()
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`)
-    })
   })
   .catch((err) => {
-    console.error('MongoDB connection error:', err)
+    console.error('❌ CRITICAL: MongoDB connection error:', err)
+    console.log('Server is still running in FAILSAFE MODE (no database)')
   })
 
 export default app

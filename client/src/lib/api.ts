@@ -1,6 +1,23 @@
 import axios from 'axios'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+let API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+
+// Clean up API_URL: remove trailing slash and ensure it ends with /api
+if (API_URL.endsWith('/')) {
+  API_URL = API_URL.slice(0, -1)
+}
+if (!API_URL.endsWith('/api') && !API_URL.includes('/api/')) {
+  console.warn('API_URL does not end with /api. Appending it automatically.')
+  API_URL = `${API_URL}/api`
+}
+
+// Diagnostic log for connectivity issues
+if (typeof window !== 'undefined') {
+  console.log('API Client Initialized. Base URL:', API_URL)
+  if (!process.env.NEXT_PUBLIC_API_URL) {
+    console.warn('WARNING: NEXT_PUBLIC_API_URL is NOT set! Falling back to localhost. Ensure environment variables are prefixed with NEXT_PUBLIC_ in Vercel.')
+  }
+}
 
 const api = axios.create({
   baseURL: API_URL,

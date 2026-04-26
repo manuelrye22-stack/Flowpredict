@@ -34,7 +34,10 @@ export default function Register() {
       })
       router.push('/login')
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed')
+      console.error('Registration error detail:', err)
+      const message = err.response?.data?.message || err.message || 'Registration failed'
+      const status = err.response?.status ? ` (Status: ${err.response.status})` : ''
+      setError(`${message}${status}`)
     } finally {
       setLoading(false)
     }

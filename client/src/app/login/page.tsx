@@ -25,7 +25,10 @@ export default function Login() {
       localStorage.setItem('user', JSON.stringify(res.data.user))
       router.push('/dashboard')
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed')
+      console.error('Login error detail:', err)
+      const message = err.response?.data?.message || err.message || 'Login failed'
+      const status = err.response?.status ? ` (Status: ${err.response.status})` : ''
+      setError(`${message}${status}`)
     } finally {
       setLoading(false)
     }
