@@ -81,11 +81,6 @@ app.use((req, res) => {
   })
 })
 
-// Start listening immediately
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server listening on 0.0.0.0:${PORT}`)
-})
-
 // Auto-resolve expired bets every hour
 cron.schedule('0 * * * *', async () => {
   console.log('Checking for expired bets...')
@@ -189,10 +184,21 @@ mongoose.connect(MONGODB_URI, {
     console.log('✅ Connected to MongoDB')
     startDepositWatcher()
     startWithdrawalProcessor()
+    
+    // Start listening ONLY after everything is ready
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Server listening on 0.0.0.0:${PORT}`)
+      console.log('API is ready to handle requests')
+    })
   })
   .catch((err) => {
     console.error('❌ CRITICAL: MongoDB connection error:', err)
     console.log('Server is still running in FAILSAFE MODE (no database)')
+    
+    // Failsafe listen so Railway doesn't kill the container
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Server listening on 0.0.0.0:${PORT} (FAILSAFE)`)
+    })
   })
 
 export default app
