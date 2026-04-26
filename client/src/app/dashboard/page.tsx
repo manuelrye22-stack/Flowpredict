@@ -67,11 +67,6 @@ export default function Dashboard() {
       alert(err.response?.data?.message || 'Failed to vote')
     }
   }
-      const serverMsg = err.response?.data?.message
-      const status = err.response?.status
-      alert(`Error: ${serverMsg}\n(Status: ${status})`)
-    }
-  }
 
   const handleResolveBet = async (betId: string, winnerId: string) => {
     if (!confirm('Are you sure you want to resolve this bet? Winner will be paid.')) {
