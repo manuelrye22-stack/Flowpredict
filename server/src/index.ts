@@ -14,6 +14,7 @@ import userRoutes from './routes/users.js'
 import transactionRoutes from './routes/transactions.js'
 import ratingRoutes from './routes/ratings.js'
 import verificationRoutes from './routes/verification.js'
+import commentRoutes from './routes/comments.js'
 import Bet from './models/Bet.js'
 import User from './models/User.js'
 import Transaction from './models/Transaction.js'
@@ -35,6 +36,7 @@ app.use('/api/users', userRoutes)
 app.use('/api/transactions', transactionRoutes)
 app.use('/api/ratings', ratingRoutes)
 app.use('/api/verification', verificationRoutes)
+app.use('/api/comments', commentRoutes)
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'FlowPredict API running' })

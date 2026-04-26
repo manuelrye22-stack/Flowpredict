@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api
 
 const api = axios.create({
   baseURL: API_URL,
@@ -88,6 +88,13 @@ export const verificationAPI = {
   autoVerify: (betId: string) => api.post(`/verification/bet/${betId}/auto-verify`),
   consensusVote: (betId: string, outcome: string) =>
     api.post(`/verification/bet/${betId}/consensus-vote`, { outcome }),
+}
+
+export const commentsAPI = {
+  getComments: (betId: string) => api.get(`/comments/${betId}`),
+  addComment: (betId: string, data: { content: string }) =>
+    api.post(`/comments/${betId}`, data),
+  deleteComment: (commentId: string) => api.delete(`/comments/${commentId}`),
 }
 
 export default api

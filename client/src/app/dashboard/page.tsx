@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { walletAPI, betsAPI, verificationAPI } from '@/lib/api'
+import { walletAPI, betsAPI, verificationAPI, commentsAPI } from '@/lib/api'
 import { toNaira, formatNaira, CRYPTO_OPTIONS } from '@/lib/constants'
 
 const NAIRA_RATE = 1550
@@ -15,6 +15,10 @@ export default function Dashboard() {
   const [myBets, setMyBets] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedCrypto, setSelectedCrypto] = useState('USDT')
+  const [comments, setComments] = useState<any[]>([])
+  const [selectedBetComments, setSelectedBetComments] = useState<string | null>(null)
+  const [newComment, setNewComment] = useState('')
+  const [postingComment, setPostingComment] = useState(false)
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -95,6 +99,30 @@ export default function Dashboard() {
       fetchData()
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to raise dispute')
+    }
+  }
+
+  const loadComments = async (betId: string) => {
+    try {
+      const res = await commentsAPI.getComments(betId)
+      setComments(res.data)
+      setSelectedBetComments(betId)
+    } catch (err) {
+      console.error('Failed to load comments:', err)
+    }
+  }
+
+  const handlePostComment = async (betId: string) => {
+    if (!newComment.trim()) return
+    setPostingComment(true)
+    try {
+      await commentsAPI.addComment(betId, { content: newComment })
+      setNewComment('')
+      loadComments(betId)
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to post comment')
+    } finally {
+      setPostingComment(false)
     }
   }
 
@@ -280,14 +308,60 @@ export default function Dashboard() {
                     
                     {/* Dispute button - for any participant of locked bets */}
                     {isLocked && (
-                      <button
+<button
                         onClick={() => handleDispute(bet._id)}
                         className="text-sm text-orange-600 hover:underline"
                       >
                         ⚠️ Raise Dispute
                       </button>
+
+                      {/* Comments toggle */}
+                      <button
+                        onClick={() => {
+                          if (selectedBetComments === bet._id) {
+                            setSelectedBetComments(null)
+                          } else {
+                            loadComments(bet._id)
+                          }
+                        }}
+                        className="text-sm text-blue-600 hover:underline ml-2"
+                      >
+                        💬 Comments
+                      </button>
+                    </div>
+
+                    {/* Comments display */}
+                    {selectedBetComments === bet._id && (
+                      <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                        <div className="space-y-2 mb-3">
+                          {comments.length === 0 ? (
+                            <p className="text-sm text-gray-500">No comments yet. Be the first!</p>
+                          ) : (
+                            comments.map((c: any) => (
+                              <div key={c._id} className="text-sm border-b pb-2">
+                                <span className="font-medium">{c.email}</span>: {c.content}
+                              </div>
+                            ))
+                          )}
+                        </div>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                            placeholder="Add a comment..."
+                            className="flex-1 px-3 py-1 border rounded"
+                          />
+                          <button
+                            onClick={() => handlePostComment(bet._id)}
+                            disabled={postingComment || !newComment.trim()}
+                            className="px-3 py-1 bg-blue-600 text-white rounded text-sm disabled:opacity-50"
+                          >
+                            {postingComment ? '...' : 'Post'}
+                          </button>
+                        </div>
+                      </div>
                     )}
-                  </div>
                 </div>
               )})}
             </div>
