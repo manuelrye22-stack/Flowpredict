@@ -62,7 +62,7 @@ async function checkDeposits() {
       return
     }
     
-    const data = await response.json()
+    const data = await response.json() as { data?: any[] }
     
     if (!data.data || !Array.isArray(data.data)) {
       return

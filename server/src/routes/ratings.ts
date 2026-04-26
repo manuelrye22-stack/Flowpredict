@@ -71,7 +71,7 @@ router.get('/received', authenticate, async (req: Request, res: Response) => {
       .sort({ createdAt: -1 })
       .lean()
 
-    const formatted = ratings.map(r => ({
+    const formatted = ratings.map((r: any) => ({
       _id: r._id,
       rating: r.rating,
       comment: r.comment,
@@ -103,7 +103,7 @@ router.get('/given', authenticate, async (req: Request, res: Response) => {
       .sort({ createdAt: -1 })
       .lean()
 
-    const formatted = ratings.map(r => ({
+    const formatted = ratings.map((r: any) => ({
       _id: r._id,
       rating: r.rating,
       comment: r.comment,
