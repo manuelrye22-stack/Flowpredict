@@ -198,7 +198,6 @@ export default function Dashboard() {
             </Link>
           </div>
 </div>
-        )}
 
         {/* Active Bets */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
