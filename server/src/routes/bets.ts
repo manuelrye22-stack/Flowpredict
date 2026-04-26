@@ -261,6 +261,7 @@ router.post('/:id/resolve', authenticate, async (req: Request, res: Response) =>
     // Find opponent info
     const opponents = bet.participants.filter((p: any) => p.userId.toString() !== winnerId)
     const opponent = opponents[0]
+    const opponentUser = opponent ? await User.findById(opponent.userId) : null
 
     // Create transaction for winner with receipt details
     await Transaction.create({
@@ -273,7 +274,7 @@ router.post('/:id/resolve', authenticate, async (req: Request, res: Response) =>
       betTopic: bet.topic,
       betOdds: bet.odds,
       opponentId: opponent?.userId?.toString(),
-      opponentEmail: opponent?.userId?.email,
+      opponentEmail: opponentUser?.email,
     })
 
     // Create loss transactions for losers
