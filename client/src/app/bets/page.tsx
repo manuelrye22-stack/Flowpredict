@@ -203,6 +203,27 @@ export default function BrowseBets() {
                   >
                     {isFull ? 'Bet Full' : 'Accept Bet'}
                   </button>
+
+                  <div className="flex gap-2 mt-3">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(`${window.location.origin}/bets/${bet._id}`)
+                        alert('Link copied! Share it with friends.')
+                      }}
+                      className="flex-1 py-2 px-3 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 flex items-center justify-center gap-1"
+                    >
+                      🔗 Copy Link
+                    </button>
+                    <button
+                      onClick={() => {
+                        const msg = `Check out this bet on FlowPredict!\n\n"${bet.topic}"\n${bet.direction} at ${bet.odds}x odds\nStake: ${bet.stake} USDT\n\nJoin here: ${window.location.origin}/bets/${bet._id}`
+                        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank')
+                      }}
+                      className="flex-1 py-2 px-3 bg-green-500 text-white rounded-lg text-sm hover:bg-green-600 flex items-center justify-center gap-1"
+                    >
+                      📱 WhatsApp
+                    </button>
+                  </div>
                 </div>
               )
             })

@@ -15,9 +15,12 @@ export default function CreateBet() {
     stake: 10,
     direction: 'YES' as 'YES' | 'NO',
     expiresAt: '',
+    isPrivate: false,
+    inviteCode: ''
   })
   const [verificationType, setVerificationType] = useState<'manual' | 'consensus' | 'api'>('manual')
   const [verificationValue, setVerificationValue] = useState('')
+  const [generatedCode, setGeneratedCode] = useState('')
   const [balance, setBalance] = useState<number>(0)
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(false)
@@ -142,6 +145,60 @@ const nairaValue = formData.stake * 1550
                     {cat}
                   </button>
                 ))}
+              </div>
+            </div>
+
+            {/* Private Bet Option */}
+            <div className="border-t pt-6 mt-6">
+              <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-semibold text-purple-800">🔒 Private Bet</h3>
+                    <p className="text-sm text-purple-600">Only people with the invite link can join</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newPrivate = !formData.isPrivate
+                      setFormData({ 
+                        ...formData, 
+                        isPrivate: newPrivate,
+                        inviteCode: newPrivate ? Math.random().toString(36).substring(2, 10).toUpperCase() : ''
+                      })
+                    }}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      formData.isPrivate ? 'bg-purple-600' : 'bg-gray-200'
+                    }`}
+                  >
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
+                      formData.isPrivate ? 'translate-x-6' : 'translate-x-1'
+                    }`} />
+                  </button>
+                </div>
+                
+                {formData.isPrivate && (
+                  <div className="mt-4 p-3 bg-white rounded-lg">
+                    <p className="text-sm text-gray-600 mb-2">Share this invite code:</p>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={formData.inviteCode}
+                        readOnly
+                        className="flex-1 px-3 py-2 border rounded-lg bg-gray-50 font-mono text-lg font-bold text-center"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText(`${window.location.origin}/bets?invite=${formData.inviteCode}`)
+                          alert('Invite link copied!')
+                        }}
+                        className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                      >
+                        Copy Link
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 

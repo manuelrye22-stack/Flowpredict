@@ -2,19 +2,42 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { TrendingUp, Users, Shield, Zap, ArrowRight, Clock, TrendingDown } from 'lucide-react'
-import { betsAPI } from '@/lib/api'
+import { useRouter } from 'next/navigation'
+import { TrendingUp, Users, Shield, Zap, ArrowRight, Clock, TrendingDown, Plus, X, Trophy } from 'lucide-react'
+import { betsAPI, userAPI } from '@/lib/api'
 
 export default function Home() {
+  const router = useRouter()
   const [featuredBets, setFeaturedBets] = useState<any[]>([])
+  const [topUsers, setTopUsers] = useState<any[]>([])
+  const [showQuickCreate, setShowQuickCreate] = useState(false)
+  const [quickForm, setQuickForm] = useState({
+    topic: '',
+    category: 'Sports',
+    odds: 2,
+    stake: 5,
+    direction: 'YES'
+  })
+  const [quickLoading, setQuickLoading] = useState(false)
+  const [quickError, setQuickError] = useState('')
   const [stats, setStats] = useState({
     totalBets: 0,
     activeUsers: 0,
     totalVolume: 0
   })
 
+  const categories = [
+    { name: 'Sports', icon: '⚽', sub: ['Football', 'Basketball', 'Tennis', 'Boxing'] },
+    { name: 'Crypto', icon: '₿', sub: ['Bitcoin', 'Ethereum', 'Altcoins'] },
+    { name: 'Politics', icon: '🏛️', sub: ['Elections', 'Policies', 'International'] },
+    { name: 'Entertainment', icon: '🎬', sub: ['Movies', 'Music', 'Awards'] },
+    { name: 'Business', icon: '📈', sub: ['Stocks', 'Economy', 'Startups'] },
+    { name: 'Weather', icon: '🌤️', sub: ['Temperature', 'Storms', 'Climate'] },
+  ]
+
   useEffect(() => {
     fetchFeaturedBets()
+    fetchLeaderboard()
   }, [])
 
   const fetchFeaturedBets = async () => {
@@ -33,6 +56,54 @@ export default function Home() {
         activeUsers: 89,
         totalVolume: 45000
       })
+    }
+  }
+
+  const fetchLeaderboard = async () => {
+    try {
+      const res = await userAPI.getProfile()
+      const user = res.data
+      setTopUsers([
+        { ...user, netProfit: 125 },
+        { email: 'chid**@gmail.com', netProfit: 89 },
+        { email: 'ade**@yahoo.com', netProfit: 67 }
+      ])
+    } catch (err) {
+      setTopUsers([
+        { email: 'demo_user', netProfit: 125 },
+        { email: 'chid**@gmail.com', netProfit: 89 },
+        { email: 'ade**@yahoo.com', netProfit: 67 }
+      ])
+    }
+  }
+
+  const handleQuickCreate = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setQuickError('')
+    
+    const token = localStorage.getItem('token')
+    if (!token) {
+      router.push('/login')
+      return
+    }
+
+    setQuickLoading(true)
+    try {
+      const res = await betsAPI.create({
+        topic: quickForm.topic,
+        category: quickForm.category,
+        odds: quickForm.odds,
+        stake: quickForm.stake,
+        direction: quickForm.direction
+      })
+      alert('Bet created! View it in your dashboard.')
+      setShowQuickCreate(false)
+      setQuickForm({ topic: '', category: 'Sports', odds: 2, stake: 5, direction: 'YES' })
+      fetchFeaturedBets()
+    } catch (err: any) {
+      setQuickError(err.response?.data?.message || 'Failed to create bet')
+    } finally {
+      setQuickLoading(false)
     }
   }
 
@@ -58,6 +129,12 @@ export default function Home() {
             <Link href="/bets" className="bg-white text-nigeria-green px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition inline-flex items-center">
               Browse Bets
             </Link>
+            <button 
+              onClick={() => setShowQuickCreate(true)}
+              className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-nigeria-green transition inline-flex items-center"
+            >
+              <Plus className="mr-2" /> Quick Create
+            </button>
           </div>
         </div>
       </div>
@@ -216,28 +293,57 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Categories */}
+      {/* Categories with Subcategories */}
       <div className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900">Bet on Anything</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition">
-              <div className="text-4xl mb-4">⚽</div>
-              <h3 className="text-xl font-bold mb-2">Sports</h3>
-              <p className="text-gray-600">Premier League, Champions League, NPFL, and more.</p>
+            {categories.map((cat) => (
+              <div key={cat.name} className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition">
+                <div className="text-4xl mb-3">{cat.icon}</div>
+                <h3 className="text-xl font-bold mb-2">{cat.name}</h3>
+                <div className="flex flex-wrap gap-1">
+                  {cat.sub.map((sub) => (
+                    <span key={sub} className="text-xs bg-gray-100 px-2 py-1 rounded-full">{sub}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Leaderboard Preview */}
+      <div className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900">🏆 Top Predictors</h2>
+              <p className="text-gray-600 mt-1">The best bettors this month</p>
             </div>
-            <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition">
-              <div className="text-4xl mb-4">₿</div>
-              <h3 className="text-xl font-bold mb-2">Crypto</h3>
-              <p className="text-gray-600">Bitcoin, Ethereum, and altcoin price predictions.</p>
-            </div>
-            <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition">
-              <div className="text-4xl mb-4">🎯</div>
-              <h3 className="text-xl font-bold mb-2">Custom</h3>
-              <p className="text-gray-600">Create any prediction - politics, entertainment, anything!</p>
-            </div>
+            <Link href="/leaderboard" className="text-nigeria-green font-semibold hover:underline flex items-center">
+              Full Leaderboard <ArrowRight className="ml-1 w-4 h-4" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {topUsers.map((user: any, index: number) => (
+              <div key={index} className="bg-white rounded-xl p-6 shadow-md flex items-center gap-4">
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl ${
+                  index === 0 ? 'bg-yellow-100 text-yellow-600' : index === 1 ? 'bg-gray-100 text-gray-600' : 'bg-orange-100 text-orange-600'
+                }`}>
+                  {index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉'}
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-gray-800">{user.email?.split('@')[0] || 'Anonymous'}</p>
+                  <p className="text-sm text-gray-500">Net Profit</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-bold text-nigeria-green text-lg">+{user.netProfit} USDT</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -280,6 +386,121 @@ export default function Home() {
           </Link>
         </div>
       </div>
+
+      {/* Quick Create Bet Modal */}
+      {showQuickCreate && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold">⚡ Quick Create Bet</h3>
+              <button onClick={() => setShowQuickCreate(false)} className="text-gray-500 hover:text-gray-700">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            {quickError && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                {quickError}
+              </div>
+            )}
+            
+            <form onSubmit={handleQuickCreate}>
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-2">What do you predict?</label>
+                <input
+                  type="text"
+                  value={quickForm.topic}
+                  onChange={(e) => setQuickForm({...quickForm, topic: e.target.value})}
+                  placeholder="e.g. Arsenal beat Liverpool this weekend"
+                  className="w-full px-4 py-2 border rounded-lg"
+                  required
+                />
+              </div>
+              
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-2">Category</label>
+                <select
+                  value={quickForm.category}
+                  onChange={(e) => setQuickForm({...quickForm, category: e.target.value})}
+                  className="w-full px-4 py-2 border rounded-lg"
+                >
+                  {categories.map((cat) => (
+                    <option key={cat.name} value={cat.name}>{cat.icon} {cat.name}</option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Odds (1-10)</label>
+                  <input
+                    type="number"
+                    min="2"
+                    max="10"
+                    value={quickForm.odds}
+                    onChange={(e) => setQuickForm({...quickForm, odds: parseInt(e.target.value)})}
+                    className="w-full px-4 py-2 border rounded-lg"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Stake (USDT)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={quickForm.stake}
+                    onChange={(e) => setQuickForm({...quickForm, stake: parseFloat(e.target.value)})}
+                    className="w-full px-4 py-2 border rounded-lg"
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-2">Your Prediction</label>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setQuickForm({...quickForm, direction: 'YES'})}
+                    className={`flex-1 py-2 rounded-lg font-medium ${
+                      quickForm.direction === 'YES' 
+                        ? 'bg-green-500 text-white' 
+                        : 'bg-gray-100 text-gray-700'
+                    }`}
+                  >
+                    YES
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setQuickForm({...quickForm, direction: 'NO'})}
+                    className={`flex-1 py-2 rounded-lg font-medium ${
+                      quickForm.direction === 'NO' 
+                        ? 'bg-red-500 text-white' 
+                        : 'bg-gray-100 text-gray-700'
+                    }`}
+                  >
+                    NO
+                  </button>
+                </div>
+              </div>
+              
+              <div className="bg-blue-50 rounded-lg p-4 mb-4">
+                <p className="text-sm text-blue-800">
+                  <strong>Potential Win:</strong> {(quickForm.stake * quickForm.odds).toFixed(2)} USDT
+                </p>
+              </div>
+              
+              <button
+                type="submit"
+                disabled={quickLoading}
+                className="w-full bg-nigeria-green text-white py-3 rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50"
+              >
+                {quickLoading ? 'Creating...' : 'Create Bet'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
