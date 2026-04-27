@@ -32,6 +32,8 @@ api.interceptors.request.use((config) => {
   }
   return config
 })
+
+export const authAPI = {
   register: (data: { email: string; password: string; walletAddress: string }) =>
     api.post('/auth/register', data),
   login: (data: { email: string; password: string }) =>
