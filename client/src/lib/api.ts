@@ -1,14 +1,12 @@
 import axios from 'axios'
 
-let API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+// ALWAYS use current origin for API in browser (works in dev, staging, and prod)
+let API_URL = 'http://localhost:3001/api'
 
-// Dynamic fallback: use current origin API if env var not set or is localhost
 if (typeof window !== 'undefined') {
-  if (!process.env.NEXT_PUBLIC_API_URL || API_URL.includes('localhost')) {
-    const currentOrigin = window.location.origin
-    API_URL = `${currentOrigin}/api`
-    console.log('Using dynamic API URL:', API_URL)
-  }
+  const currentOrigin = window.location.origin
+  API_URL = `${currentOrigin}/api`
+  console.log('API URL set to current origin:', API_URL)
 }
 
 // Clean up API_URL: remove trailing slash and ensure it ends with /api
