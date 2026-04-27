@@ -1,46 +1,11 @@
-# Environment - NEVER COMMIT THESE
+node_modules/
+dist/
+.next/
 .env
 .env.local
-.env.production
-.env.example
-
-# Dependencies
-node_modules/
-*/node_modules/
-
-# Build outputs
-.next/
-dist/
-build/
-out/
-
-# IDE
+.env*.local
+*.log
+.DS_Store
+coverage/
 .vscode/
 .idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Secrets - NEVER COMMIT
-*.pem
-*.key
-credentials.json
-serviceAccountKey.json
-
-# MongoDB (if local)
-*.mongodump
-
-# Railway (local config)
-railway.json
-
-# Vercel
-.vercel

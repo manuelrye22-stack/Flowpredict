@@ -1,3 +1,6 @@
+import dns from "node:dns/promises"
+dns.setServers(["1.1.1.1", "8.8.8.8"])
+
 import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
@@ -179,6 +182,7 @@ console.log('Connecting to MongoDB...')
 mongoose.connect(MONGODB_URI, {
   serverSelectionTimeoutMS: 10000,
   socketTimeoutMS: 45000,
+  family: 4,
 })
   .then(() => {
     console.log('✅ Connected to MongoDB')
