@@ -1,26 +1,20 @@
 import axios from 'axios'
 
-// ALWAYS use current origin for API in browser (works in dev, staging, and prod)
-let API_URL = 'http://localhost:3001/api'
+// Railway server URL (fallback if env var not set)
+const SERVER_URL = 'https://flowpredict-production.up.railway.app'
 
-if (typeof window !== 'undefined') {
-  const currentOrigin = window.location.origin
-  API_URL = `${currentOrigin}/api`
-  console.log('API URL set to current origin:', API_URL)
-}
+// Use env var if set, otherwise use server URL
+let API_URL = process.env.NEXT_PUBLIC_API_URL || `${SERVER_URL}/api`
 
-// Clean up API_URL: remove trailing slash and ensure it ends with /api
+// Clean up API_URL: ensure it ends with /api
 if (API_URL.endsWith('/')) {
   API_URL = API_URL.slice(0, -1)
 }
-if (!API_URL.endsWith('/api') && !API_URL.includes('/api/')) {
+if (!API_URL.endsWith('/api')) {
   API_URL = `${API_URL}/api`
 }
 
-// Diagnostic log for connectivity issues
-if (typeof window !== 'undefined') {
-  console.log('API Client Initialized. Base URL:', API_URL)
-}
+console.log('API URL configured to:', API_URL)
 
 const api = axios.create({
   baseURL: API_URL,
