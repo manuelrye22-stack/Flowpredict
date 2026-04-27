@@ -2,21 +2,26 @@ import axios from 'axios'
 
 let API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
 
+// Dynamic fallback: use current origin API if env var not set or is localhost
+if (typeof window !== 'undefined') {
+  if (!process.env.NEXT_PUBLIC_API_URL || API_URL.includes('localhost')) {
+    const currentOrigin = window.location.origin
+    API_URL = `${currentOrigin}/api`
+    console.log('Using dynamic API URL:', API_URL)
+  }
+}
+
 // Clean up API_URL: remove trailing slash and ensure it ends with /api
 if (API_URL.endsWith('/')) {
   API_URL = API_URL.slice(0, -1)
 }
 if (!API_URL.endsWith('/api') && !API_URL.includes('/api/')) {
-  console.warn('API_URL does not end with /api. Appending it automatically.')
   API_URL = `${API_URL}/api`
 }
 
 // Diagnostic log for connectivity issues
 if (typeof window !== 'undefined') {
   console.log('API Client Initialized. Base URL:', API_URL)
-  if (!process.env.NEXT_PUBLIC_API_URL) {
-    console.warn('WARNING: NEXT_PUBLIC_API_URL is NOT set! Falling back to localhost. Ensure environment variables are prefixed with NEXT_PUBLIC_ in Vercel.')
-  }
 }
 
 const api = axios.create({
@@ -35,8 +40,6 @@ api.interceptors.request.use((config) => {
   }
   return config
 })
-
-export const authAPI = {
   register: (data: { email: string; password: string; walletAddress: string }) =>
     api.post('/auth/register', data),
   login: (data: { email: string; password: string }) =>
