@@ -175,6 +175,12 @@ export default function BrowseBets() {
                         {new Date(bet.expiresAt).toLocaleDateString()}
                       </span>
                     </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Created:</span>
+                      <span className="text-xs">
+                        {new Date(bet.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
                   </div>
 
                   <div className="mb-4">
