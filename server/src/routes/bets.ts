@@ -155,7 +155,10 @@ const bet = await Bet.findById(req.params.id)
     // Check bet limit for free users
     const nairaValue = bet.stake * 1550
     const user = await User.findById(req.body.userId)
-    if (nairaValue >= 30000 && !user?.isPro) {
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+    if (nairaValue >= 30000 && !user.isPro) {
       return res.status(400).json({ 
         message: 'Pro subscription required to accept bets over ₦30,000. Please upgrade to Pro.' 
       })

@@ -100,25 +100,7 @@ router.post('/subscription', authenticate, async (req: Request, res: Response) =
         amount: '₦5,000',
         note: 'Use your email as payment reference'
       }
-    })
-  }
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' })
-    }
-
-    const now = new Date()
-    const expires = new Date(now)
-    expires.setMonth(expires.getMonth() + 1)
-
-    user.isPro = true
-    user.proExpiresAt = expires
-    await user.save()
-
-    res.json({ 
-      message: 'Subscription activated', 
-      isPro: user.isPro,
-      proExpiresAt: user.proExpiresAt 
-    })
+})
   } catch (error) {
     console.error('Subscription error:', error)
     res.status(500).json({ message: 'Subscription failed' })

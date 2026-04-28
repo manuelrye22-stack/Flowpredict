@@ -9,6 +9,13 @@ export interface IUser extends Document {
   proExpiresAt?: Date
   createdAt: Date
   updatedAt: Date
+  notifications?: Array<{
+    type: string
+    title: string
+    message: string
+    read: boolean
+    createdAt: Date
+  }>
 }
 
 const UserSchema = new Schema<IUser>({
@@ -37,6 +44,13 @@ const UserSchema = new Schema<IUser>({
   proExpiresAt: {
     type: Date,
   },
+  notifications: [{
+    type: String,
+    title: String,
+    message: String,
+    read: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now }
+  }],
 }, {
   timestamps: true,
 })
