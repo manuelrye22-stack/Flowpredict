@@ -192,28 +192,28 @@ export default function Home() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Example Bet 1 */}
-              <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+              <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6 border border-gray-200">
                 <div className="flex justify-between items-start mb-4">
-                  <span className="px-3 py-1 bg-gray-200 text-sm rounded-full">Sports</span>
-                  <span className="px-3 py-1 bg-green-100 text-green-700 text-sm rounded-full">YES</span>
+                  <span className="px-3 py-1 bg-gray-200 dark:bg-gray-600 text-sm rounded-full">Sports</span>
+                  <span className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-sm rounded-full">YES</span>
                 </div>
-                <h3 className="text-lg font-semibold mb-3">Arsenal to win the Premier League 2025-26</h3>
+                <h3 className="text-lg font-semibold mb-3 dark:text-white">Arsenal to win the Premier League 2025-26</h3>
                 <div className="grid grid-cols-3 gap-4 mb-4 text-sm">
                   <div>
-                    <p className="text-gray-500">Stake</p>
-                    <p className="font-semibold">10 USDT</p>
+                    <p className="text-gray-500 dark:text-gray-400">Stake</p>
+                    <p className="font-semibold dark:text-white">10 USDT</p>
                   </div>
                   <div>
-                    <p className="text-gray-500">Odds</p>
-                    <p className="font-semibold">3x</p>
+                    <p className="text-gray-500 dark:text-gray-400">Odds</p>
+                    <p className="font-semibold dark:text-white">3x</p>
                   </div>
                   <div>
-                    <p className="text-gray-500">Pool</p>
+                    <p className="text-gray-500 dark:text-gray-400">Pool</p>
                     <p className="font-semibold text-nigeria-green">30 USDT</p>
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center text-sm text-gray-500">
+                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                     <Clock className="w-4 h-4 mr-1" />
                     5/31/2026
                   </div>
@@ -221,28 +221,28 @@ export default function Home() {
                 </div>
               </div>
               {/* Example Bet 2 */}
-              <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+              <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6 border border-gray-200 dark:border-gray-600">
                 <div className="flex justify-between items-start mb-4">
-                  <span className="px-3 py-1 bg-gray-200 text-sm rounded-full">Crypto</span>
-                  <span className="px-3 py-1 bg-red-100 text-red-700 text-sm rounded-full">NO</span>
+                  <span className="px-3 py-1 bg-gray-200 dark:bg-gray-600 text-sm rounded-full dark:text-gray-300">Crypto</span>
+                  <span className="px-3 py-1 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 text-sm rounded-full">NO</span>
                 </div>
-                <h3 className="text-lg font-semibold mb-3">Bitcoin to hit $150k by end of 2026</h3>
+                <h3 className="text-lg font-semibold mb-3 dark:text-white">Bitcoin to hit $150k by end of 2026</h3>
                 <div className="grid grid-cols-3 gap-4 mb-4 text-sm">
                   <div>
-                    <p className="text-gray-500">Stake</p>
-                    <p className="font-semibold">5 USDT</p>
+                    <p className="text-gray-500 dark:text-gray-400">Stake</p>
+                    <p className="font-semibold dark:text-white">5 USDT</p>
                   </div>
                   <div>
-                    <p className="text-gray-500">Odds</p>
-                    <p className="font-semibold">2x</p>
+                    <p className="text-gray-500 dark:text-gray-400">Odds</p>
+                    <p className="font-semibold dark:text-white">2x</p>
                   </div>
                   <div>
-                    <p className="text-gray-500">Pool</p>
+                    <p className="text-gray-500 dark:text-gray-400">Pool</p>
                     <p className="font-semibold text-nigeria-green">10 USDT</p>
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center text-sm text-gray-500">
+                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                     <Clock className="w-4 h-4 mr-1" />
                     12/31/2026
                   </div>
@@ -255,7 +255,7 @@ export default function Home() {
       </div>
 
       {/* Features */}
-      <div className="py-16 bg-gray-50">
+      <div className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold dark:text-white">How It Works</h2>
@@ -316,7 +316,7 @@ export default function Home() {
       </div>
 
       {/* Leaderboard Preview */}
-      <div className="py-16 bg-gray-50">
+      <div className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-8">
             <div>
@@ -349,42 +349,42 @@ export default function Home() {
       </div>
 
       {/* Pricing */}
-      <div className="py-16 bg-gray-50">
+      <div className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900">Simple Pricing</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Simple Pricing</h2>
           </div>
           <div className="max-w-2xl mx-auto">
-            <div className="bg-white dark:bg-gray-800 border-2 border-nigeria-green rounded-xl p-8 shadow-lg">
+            <div className="bg-white dark:bg-gray-700 border-2 border-nigeria-green rounded-xl p-8 shadow-lg">
               <div className="text-center">
-                <h3 className="text-2xl font-bold mb-4">Free for Most Bets</h3>
+                <h3 className="text-2xl font-bold mb-4 dark:text-white">Free for Most Bets</h3>
                 <p className="text-4xl font-bold text-nigeria-green mb-2">₦0</p>
-                <p className="text-gray-600 mb-6">For bets under ₦30,000</p>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">For bets under ₦30,000</p>
               </div>
               <ul className="space-y-3 mb-8">
-                <li className="flex items-center"><span className="text-green-500 mr-2">✓</span> Create unlimited bets</li>
-                <li className="flex items-center"><span className="text-green-500 mr-2">✓</span> No platform cut from your wins</li>
-                <li className="flex items-center"><span className="text-green-500 mr-2">✓</span> Basic features included</li>
+                <li className="flex items-center dark:text-white"><span className="text-green-500 mr-2">✓</span> Create unlimited bets</li>
+                <li className="flex items-center dark:text-white"><span className="text-green-500 mr-2">✓</span> No platform cut from your wins</li>
+                <li className="flex items-center dark:text-white"><span className="text-green-500 mr-2">✓</span> Basic features included</li>
               </ul>
               <div className="border-t pt-4">
-                <p className="text-lg font-semibold text-center">Free</p>
-                <p className="text-sm text-gray-600 text-center">Bets up to ₦30,000</p>
+                <p className="text-lg font-semibold text-center dark:text-white">Free</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 text-center">Bets up to ₦30,000</p>
               </div>
             </div>
 
             {/* Pro */}
-            <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border-2 border-purple-300">
-              <h3 className="text-2xl font-bold text-purple-800 mb-2">Pro</h3>
-              <p className="text-gray-600 mb-4">Unlimited predictions with no limits</p>
+            <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900 dark:to-gray-800 rounded-lg p-6 border-2 border-purple-300 dark:border-purple-700">
+              <h3 className="text-2xl font-bold text-purple-800 dark:text-purple-300 mb-2">Pro</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">Unlimited predictions with no limits</p>
               <ul className="space-y-2 mb-6 text-sm">
-                <li className="flex items-center"><span className="text-purple-500 mr-2">✓</span> Create bets of any amount</li>
-                <li className="flex items-center"><span className="text-purple-500 mr-2">✓</span> Accept any bet</li>
-                <li className="flex items-center"><span className="text-purple-500 mr-2">✓</span> No platform cut from your wins</li>
-                <li className="flex items-center"><span className="text-purple-500 mr-2">✓</span> Priority support</li>
+                <li className="flex items-center dark:text-white"><span className="text-purple-500 mr-2">✓</span> Create bets of any amount</li>
+                <li className="flex items-center dark:text-white"><span className="text-purple-500 mr-2">✓</span> Accept any bet</li>
+                <li className="flex items-center dark:text-white"><span className="text-purple-500 mr-2">✓</span> No platform cut from your wins</li>
+                <li className="flex items-center dark:text-white"><span className="text-purple-500 mr-2">✓</span> Priority support</li>
               </ul>
               <div className="border-t pt-4">
-                <p className="text-lg font-semibold text-center">Pro: ₦5,000/month</p>
-                <p className="text-sm text-gray-600 text-center">Unlimited bets + withdrawals</p>
+                <p className="text-lg font-semibold text-center dark:text-white">Pro: ₦5,000/month</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 text-center">Unlimited bets + withdrawals</p>
               </div>
             </div>
           </div>
