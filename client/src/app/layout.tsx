@@ -23,10 +23,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
         <NotificationBanner />
-        <nav className="bg-nigeria-green dark:bg-gray-800 text-white shadow-lg sticky top-0 z-50">
+        <nav className="bg-nigeria-green dark:bg-gray-800 text-white dark:text-gray-100 shadow-lg sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
             <div className="flex items-center justify-between h-14 sm:h-16">
               <a href="/" className="text-lg sm:text-xl font-bold">FlowPredict</a>
