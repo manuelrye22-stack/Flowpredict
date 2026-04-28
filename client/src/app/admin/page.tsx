@@ -375,12 +375,22 @@ export default function AdminPanel() {
                           >
                             Balance
                           </button>
-                          <button
-                            onClick={() => handleSetRole(u._id, u.role === 'admin' ? 'user' : 'admin')}
-                            className="px-2 py-1 bg-indigo-500 text-white text-xs rounded"
-                          >
-                            {u.role === 'admin' ? 'Remove Admin' : 'Make Admin'}
-                          </button>
+                          {u.role !== 'admin' && (
+                            <button
+                              onClick={() => handleSetRole(u._id, 'admin')}
+                              className="px-2 py-1 bg-indigo-500 text-white text-xs rounded"
+                            >
+                              Make Admin
+                            </button>
+                          )}
+                          {u.role === 'admin' && (
+                            <button
+                              onClick={() => handleSetRole(u._id, 'user')}
+                              className="px-2 py-1 bg-red-500 text-white text-xs rounded"
+                            >
+                              Remove Admin
+                            </button>
+                          )}
                           <button
                             onClick={() => handleSetPro(u._id, !u.isPro)}
                             className="px-2 py-1 bg-purple-500 text-white text-xs rounded"
@@ -392,7 +402,7 @@ export default function AdminPanel() {
                             className={`px-2 py-1 text-white text-xs rounded ${u.flagged ? 'bg-gray-500' : 'bg-yellow-500'}`}
                           >
                             {u.flagged ? 'Unflag' : 'Flag'}
-</button>
+                          </button>
                           <button
                             onClick={() => handleBanUser(u._id, !u.isBanned)}
                             className={`px-2 py-1 text-white text-xs rounded ${u.isBanned ? 'bg-green-500' : 'bg-red-500'}`}
