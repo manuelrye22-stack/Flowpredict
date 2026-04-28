@@ -18,6 +18,10 @@ export interface IUser extends Document {
   }>
   preferredNetwork?: 'USDT' | 'LTC'
   lastDepositMethod?: 'USDT' | 'LTC'
+  isBanned?: boolean
+  banReason?: string
+  flagged?: boolean
+  flagReason?: string
 }
 
 const UserSchema = new Schema<IUser>({
@@ -60,6 +64,20 @@ const UserSchema = new Schema<IUser>({
   lastDepositMethod: {
     type: String,
     enum: ['USDT', 'LTC'],
+  },
+  isBanned: {
+    type: Boolean,
+    default: false,
+  },
+  banReason: {
+    type: String,
+  },
+  flagged: {
+    type: Boolean,
+    default: false,
+  },
+  flagReason: {
+    type: String,
   },
 }, {
   timestamps: true,

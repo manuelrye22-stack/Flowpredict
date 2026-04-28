@@ -16,7 +16,7 @@ export interface IBet extends Document {
   direction: 'YES' | 'NO'
   participants: IParticipant[]
   requiredParticipants: number
-  status: 'OPEN' | 'MATCHED' | 'RESOLVED' | 'DISPUTED' | 'EXPIRED'
+  status: 'OPEN' | 'MATCHED' | 'RESOLVED' | 'DISPUTED' | 'EXPIRED' | 'CLOSED'
   winnerId?: mongoose.Types.ObjectId
   resolution?: string
   createdAt: Date
@@ -82,7 +82,7 @@ const BetSchema = new Schema<IBet>({
   },
   status: {
     type: String,
-    enum: ['OPEN', 'MATCHED', 'RESOLVED', 'DISPUTED'],
+    enum: ['OPEN', 'MATCHED', 'RESOLVED', 'DISPUTED', 'CLOSED'],
     default: 'OPEN',
   },
   winnerId: {

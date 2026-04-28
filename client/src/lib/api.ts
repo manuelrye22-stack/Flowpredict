@@ -101,4 +101,23 @@ export const commentsAPI = {
   deleteComment: (commentId: string) => api.delete(`/comments/${commentId}`),
 }
 
+export const adminAPI = {
+  getStats: () => api.get('/admin/stats'),
+  getUsers: (params?: { search?: string; filter?: string; page?: number }) =>
+    api.get('/admin/users', { params }),
+  getUser: (id: string) => api.get(`/admin/users/${id}`),
+  updateUser: (id: string, data: any) => api.put(`/admin/users/${id}`, data),
+  banUser: (id: string, ban: boolean, reason?: string) =>
+    api.post(`/admin/users/${id}/ban`, { ban, reason }),
+  flagUser: (id: string, flag: boolean, reason?: string) =>
+    api.post(`/admin/users/${id}/flag`, { flag, reason }),
+  getBets: (params?: { status?: string; category?: string; page?: number }) =>
+    api.get('/admin/bets', { params }),
+  closeBet: (id: string) => api.put(`/admin/bets/${id}/close`),
+  deleteBet: (id: string, refund?: boolean) =>
+    api.delete(`/admin/bets/${id}`, { params: { refund } }),
+  manualDeposit: (data: { userId: string; amount: number; note?: string }) =>
+    api.post('/admin/deposits/manual', data),
+}
+
 export default api
