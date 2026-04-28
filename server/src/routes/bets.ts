@@ -146,32 +146,19 @@ router.post('/', authenticate, async (req: Request, res: Response) => {
 // JOIN/ACCEPT BET
 router.post('/:id/accept', authenticate, async (req: Request, res: Response) => {
   try {
-    const bet = await Bet.findById(req.params.id)
+const bet = await Bet.findById(req.params.id)
     
     if (!bet) {
       return res.status(404).json({ message: 'Bet not found' })
     }
 
-    if (bet.status !== 'OPEN') {
-      return res.status(400).json({ message: 'Bet is not open for acceptance' })
-    }
-
-    // Check if user is the creator
-    if (bet.creatorId.toString() === req.body.userId) {
-      return res.status(400).json({ message: 'Cannot join your own bet' })
-    }
-
-    // Check if user already joined
-    const alreadyJoined = bet.participants.some(
-      (p: any) => p.userId.toString() === req.body.userId
-    )
-    if (alreadyJoined) {
-      return res.status(400).json({ message: 'You have already joined this bet' })
-    }
-
+    // Check bet limit for free users
+    const nairaValue = bet.stake * 1550
     const user = await User.findById(req.body.userId)
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' })
+    if (nairaValue >= 30000 && !user?.isPro) {
+      return res.status(400).json({ 
+        message: 'Pro subscription required to accept bets over ₦30,000. Please upgrade to Pro.' 
+      })
     }
 
     if (user.balance < bet.stake) {

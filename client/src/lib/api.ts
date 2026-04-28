@@ -38,7 +38,7 @@ export const walletAPI = {
     api.post('/wallet/deposit', data),
   linkDeposit: (data: { txHash: string }) =>
     api.post('/wallet/deposit/link', data),
-  withdraw: (data: { amount: number; address: string }) =>
+  withdraw: (data: { amount: number; address: string; tipAmount?: number }) =>
     api.post('/wallet/withdraw', data),
   faucet: () => api.post('/wallet/faucet'),
   getTransactions: () => api.get('/wallet/transactions'),
@@ -71,7 +71,7 @@ export const betsAPI = {
 
 export const userAPI = {
   getProfile: () => api.get('/users/profile'),
-  subscribe: (data: { plan: string }) => api.post('/subscription', data),
+  subscribe: (data: { plan: string; paymentMethod?: string }) => api.post('/subscription', data),
 }
 
 export const ratingsAPI = {

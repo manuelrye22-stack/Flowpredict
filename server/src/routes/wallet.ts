@@ -177,7 +177,7 @@ router.post('/faucet', authenticate, async (req: Request, res: Response) => {
 
 router.post('/withdraw', authenticate, async (req: Request, res: Response) => {
   try {
-    const { amount, address } = req.body
+    const { amount, address, tipAmount = 0 } = req.body
 
     if (!amount || amount <= 0) {
       return res.status(400).json({ message: 'Invalid amount' })
@@ -188,8 +188,16 @@ router.post('/withdraw', authenticate, async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'User not found' })
     }
 
-    // Check balance - but don't deduct yet (await admin approval)
-    if (user.balance < amount) {
+    const nairaValue = (amount + tipAmount) * 1550
+    if (nairaValue >= 30000 && !user.isPro) {
+      return res.status(400).json({ 
+        message: 'Pro subscription required for withdrawals over ₦30,000. Please upgrade to Pro.' 
+      })
+    }
+
+    // Check balance (include tip in deduction)
+    const totalDeduction = amount + tipAmount
+    if (user.balance < totalDeduction) {
       return res.status(400).json({ message: 'Insufficient balance' })
     }
 
@@ -198,6 +206,7 @@ router.post('/withdraw', authenticate, async (req: Request, res: Response) => {
       userId: user._id,
       amount,
       address,
+      tipAmount, // Platform tip (optional)
       status: 'pending',
     })
 

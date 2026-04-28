@@ -45,13 +45,63 @@ router.get('/profile', authenticate, async (req: Request, res: Response) => {
 
 router.post('/subscription', authenticate, async (req: Request, res: Response) => {
   try {
-    const { plan } = req.body
+    const { plan, paymentMethod, transactionRef } = req.body
 
     if (plan !== 'pro') {
       return res.status(400).json({ message: 'Invalid plan' })
     }
 
+    // Check if already pro
     const user = await User.findById(req.body.userId)
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    if (user.isPro && user.proExpiresAt && user.proExpiresAt > new Date()) {
+      return res.status(400).json({ message: 'Already subscribed to Pro' })
+    }
+
+    // For manual bank transfer - just enable for demo (in production, verify payment first)
+    if (paymentMethod === 'bank_transfer') {
+      const now = new Date()
+      const expires = new Date(now)
+      expires.setMonth(expires.getMonth() + 1)
+
+      user.isPro = true
+      user.proExpiresAt = expires
+      await user.save()
+
+      res.json({ 
+        message: 'Pro subscription activated via bank transfer!', 
+        isPro: user.isPro,
+        proExpiresAt: user.proExpiresAt,
+        instructions: 'Transfer ₦5,000 to: Account Name: FlowPredict, Bank: Providus Bank, Account: 9500000000'
+      })
+      return
+    }
+
+    // Demo mode - just enable
+    const now = new Date()
+    const expires = new Date(now)
+    expires.setMonth(expires.getMonth() + 1)
+
+    user.isPro = true
+    user.proExpiresAt = expires
+    await user.save()
+
+    res.json({ 
+      message: 'Pro subscription activated', 
+      isPro: user.isPro,
+      proExpiresAt: user.proExpiresAt,
+      paymentInfo: {
+        bank: 'Providus Bank',
+        accountName: 'FlowPredict',
+        accountNumber: '9500000000',
+        amount: '₦5,000',
+        note: 'Use your email as payment reference'
+      }
+    })
+  }
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }

@@ -22,8 +22,10 @@ export default function Profile() {
   const [givenRatings, setGivenRatings] = useState<string[]>([])
   const [showDeposit, setShowDeposit] = useState(false)
   const [showWithdraw, setShowWithdraw] = useState(false)
+  const [showProUpgrade, setShowProUpgrade] = useState(false)
   const [depositTxHash, setDepositTxHash] = useState('')
   const [withdrawAmount, setWithdrawAmount] = useState('')
+  const [withdrawTip, setWithdrawTip] = useState('0')
   const [withdrawAddress, setWithdrawAddress] = useState('')
   const [processing, setProcessing] = useState(false)
   const [gettingFaucet, setGettingFaucet] = useState(false)
@@ -194,15 +196,18 @@ export default function Profile() {
       alert('Insufficient balance')
       return
     }
+    const tipAmount = parseFloat(withdrawTip) || 0
     setProcessing(true)
     try {
       await walletAPI.withdraw({ 
         amount: parseFloat(withdrawAmount), 
-        address: withdrawAddress 
+        address: withdrawAddress,
+        tipAmount
       })
-      alert('Withdrawal request submitted!')
+      alert(`Withdrawal request submitted!${tipAmount > 0 ? ' Thanks for the tip! 🙏' : ''}`)
       setShowWithdraw(false)
       setWithdrawAmount('')
+      setWithdrawTip('0')
       setWithdrawAddress('')
       fetchData()
     } catch (err: any) {
@@ -215,8 +220,8 @@ export default function Profile() {
   const handleSubscribe = async (plan: string) => {
     setSubscribing(true)
     try {
-      await userAPI.subscribe({ plan })
-      alert('Subscription successful! You can now create high-stakes bets.')
+      await userAPI.subscribe({ plan, paymentMethod: 'bank_transfer' })
+      alert('Pro subscription activated! You can now create high-stakes bets.')
       fetchData()
     } catch (err: any) {
       alert(err.response?.data?.message || 'Subscription failed')
@@ -688,9 +693,31 @@ export default function Profile() {
                     value={withdrawAmount}
                     onChange={(e) => setWithdrawAmount(e.target.value)}
                     className="w-full px-4 py-2 border rounded-lg"
+                    placeholder="Enter amount"
                     required
                   />
                 </div>
+                
+                <div className="mb-4 bg-purple-50 border border-purple-200 rounded-lg p-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-sm">☕ Tip the Developer</p>
+                      <p className="text-xs text-gray-600">Support FlowPredict development</p>
+                    </div>
+                    <div className="text-purple-600 font-bold">Optional</div>
+                  </div>
+                  <select 
+                    value={withdrawTip}
+                    onChange={(e) => setWithdrawTip(e.target.value)}
+                    className="w-full mt-2 px-3 py-2 border rounded-lg text-sm"
+                  >
+                    <option value="0">No tip</option>
+                    <option value="0.5">₦775 (~0.5 USDT)</option>
+                    <option value="1">₦1,550 (~1 USDT)</option>
+                    <option value="2">₦3,100 (~2 USDT)</option>
+                  </select>
+                </div>
+
                 <div className="mb-4">
                   <label className="block text-sm font-medium mb-2">USDT TRC-20 Address</label>
                   <input
@@ -732,8 +759,8 @@ export default function Profile() {
               <h3 className="text-lg font-bold mb-2">Free</h3>
               <p className="text-3xl font-bold mb-4">₦0<span className="text-sm font-normal">/month</span></p>
               <ul className="space-y-2 mb-6">
-                <li className="flex items-center text-sm">✓ Create bets under ₦30,000</li>
-                <li className="flex items-center text-sm">✓ Accept any bet</li>
+                <li className="flex items-center text-sm">✓ Create & accept bets up to ₦30,000</li>
+                <li className="flex items-center text-sm">✓ Withdraw up to ₦30,000 per bet</li>
                 <li className="flex items-center text-sm">✓ Basic dashboard</li>
               </ul>
               <button className="w-full py-2 px-4 bg-gray-200 text-gray-600 rounded-lg font-medium cursor-not-allowed" disabled>
@@ -748,12 +775,13 @@ export default function Profile() {
                 </span>
               )}
               <h3 className="text-lg font-bold mb-2">Pro</h3>
-              <p className="text-3xl font-bold mb-4">₦2,000<span className="text-sm font-normal">/month</span></p>
+              <p className="text-3xl font-bold mb-4">₦5,000<span className="text-sm font-normal">/month</span></p>
               <ul className="space-y-2 mb-6">
-                <li className="flex items-center text-sm">✓ Unlimited stake limits</li>
-                <li className="flex items-center text-sm">✓ Create bets over ₦30,000</li>
+                <li className="flex items-center text-sm">✓ Create bets of any amount</li>
+                <li className="flex items-center text-sm">✓ Accept any bet</li>
+                <li className="flex items-center text-sm">✓ Withdraw any amount</li>
                 <li className="flex items-center text-sm">✓ Priority support</li>
-                <li className="flex items-center text-sm">✓ Analytics dashboard</li>
+                <li className="flex items-center text-sm">✓ No betting limits</li>
               </ul>
               {user?.isPro ? (
                 <button className="w-full py-2 px-4 bg-gray-200 text-gray-600 rounded-lg font-medium" disabled>
@@ -765,16 +793,16 @@ export default function Profile() {
                   disabled={subscribing}
                   className="w-full py-2 px-4 bg-nigeria-green text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-50"
                 >
-                  {subscribing ? 'Processing...' : 'Subscribe (Demo)'}
+                  {subscribing ? 'Processing...' : 'Subscribe via Bank Transfer'}
                 </button>
               )}
             </div>
           </div>
 
-          <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-sm text-yellow-800">
-              <strong>Note:</strong> This is a demo. In production, payment would be handled via USDT or other methods.
-              Pro subscription enables bets over ₦30,000.
+          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-800">
+              <strong>Bank Transfer:</strong> Transfer ₦5,000 to Account: FlowPredict, Bank: Providus, No: 9500000000. 
+              Use your email as payment reference. We'll activate within 24hrs.
             </p>
           </div>
         </div>

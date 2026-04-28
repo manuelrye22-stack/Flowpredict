@@ -363,13 +363,28 @@ export default function Home() {
               </div>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-center"><span className="text-green-500 mr-2">✓</span> Create unlimited bets</li>
-                <li className="flex items-center"><span className="text-green-500 mr-2">✓</span> Accept any bet</li>
                 <li className="flex items-center"><span className="text-green-500 mr-2">✓</span> No platform cut from your wins</li>
                 <li className="flex items-center"><span className="text-green-500 mr-2">✓</span> Basic features included</li>
               </ul>
               <div className="border-t pt-4">
-                <p className="text-lg font-semibold text-center">Pro: ₦2,000/month</p>
-                <p className="text-sm text-gray-600 text-center">For bets over ₦30,000 + advanced features</p>
+                <p className="text-lg font-semibold text-center">Free</p>
+                <p className="text-sm text-gray-600 text-center">Bets up to ₦30,000</p>
+              </div>
+            </div>
+
+            {/* Pro */}
+            <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border-2 border-purple-300">
+              <h3 className="text-2xl font-bold text-purple-800 mb-2">Pro</h3>
+              <p className="text-gray-600 mb-4">Unlimited predictions with no limits</p>
+              <ul className="space-y-2 mb-6 text-sm">
+                <li className="flex items-center"><span className="text-purple-500 mr-2">✓</span> Create bets of any amount</li>
+                <li className="flex items-center"><span className="text-purple-500 mr-2">✓</span> Accept any bet</li>
+                <li className="flex items-center"><span className="text-purple-500 mr-2">✓</span> No platform cut from your wins</li>
+                <li className="flex items-center"><span className="text-purple-500 mr-2">✓</span> Priority support</li>
+              </ul>
+              <div className="border-t pt-4">
+                <p className="text-lg font-semibold text-center">Pro: ₦5,000/month</p>
+                <p className="text-sm text-gray-600 text-center">Unlimited bets + withdrawals</p>
               </div>
             </div>
           </div>

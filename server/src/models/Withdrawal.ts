@@ -3,6 +3,7 @@ import mongoose, { Document, Schema } from 'mongoose'
 export interface IWithdrawal extends Document {
   userId: mongoose.Types.ObjectId
   amount: number
+  tipAmount?: number // Optional tip to platform
   address: string // TRC-20 address
   status: 'pending' | 'approved' | 'rejected' | 'completed' | 'failed'
   txHash?: string
@@ -21,6 +22,10 @@ const WithdrawalSchema = new Schema<IWithdrawal>({
   amount: {
     type: Number,
     required: true,
+  },
+  tipAmount: {
+    type: Number,
+    default: 0,
   },
   address: {
     type: String,
