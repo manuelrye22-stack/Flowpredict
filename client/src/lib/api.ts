@@ -24,7 +24,7 @@ api.interceptors.request.use((config) => {
 })
 
 export const authAPI = {
-  register: (data: { email: string; password: string; walletAddress: string }) =>
+  register: (data: { email: string; username: string; password: string; walletAddress: string }) =>
     api.post('/auth/register', data),
   login: (data: { email: string; password: string }) =>
     api.post('/auth/login', data),
@@ -118,6 +118,11 @@ export const adminAPI = {
     api.delete(`/admin/bets/${id}`, { params: { refund } }),
   manualDeposit: (data: { userId: string; amount: number; note?: string }) =>
     api.post('/admin/deposits/manual', data),
+}
+
+export const chatAPI = {
+  getMessages: (limit?: number) => api.get('/chat', { params: { limit } }),
+  sendMessage: (content: string) => api.post('/chat', { content }),
 }
 
 export default api

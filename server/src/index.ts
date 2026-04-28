@@ -16,6 +16,7 @@ import ratingRoutes from './routes/ratings.js'
 import verificationRoutes from './routes/verification.js'
 import commentRoutes from './routes/comments.js'
 import adminRoutes from './routes/admin.js'
+import chatRoutes from './routes/chat.js'
 import Bet from './models/Bet.js'
 import User from './models/User.js'
 import Transaction from './models/Transaction.js'
@@ -60,6 +61,7 @@ mountRoutes('/api/ratings', ratingRoutes)
 mountRoutes('/api/verification', verificationRoutes)
 mountRoutes('/api/comments', commentRoutes)
 mountRoutes('/api/admin', adminRoutes)
+mountRoutes('/api/chat', chatRoutes)
 
 app.get('/api/health', (req, res) => {
   res.json({ 

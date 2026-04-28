@@ -37,6 +37,7 @@ export default function RootLayout({
                 <a href="/bets/create" className="hover:bg-green-700 px-2 py-2 rounded-md text-sm font-medium">Create</a>
                 <a href="/dashboard" className="hover:bg-green-700 px-2 py-2 rounded-md text-sm font-medium">Dashboard</a>
                 <a href="/leaderboard" className="hover:bg-green-700 px-2 py-2 rounded-md text-sm font-medium">🏆</a>
+                <a href="/chat" className="hover:bg-green-700 px-2 py-2 rounded-md text-sm font-medium">💬</a>
                 <a href="/admin" className="hover:bg-green-700 px-2 py-2 rounded-md text-sm font-medium">Admin</a>
               </div>
               
@@ -68,6 +69,10 @@ export default function RootLayout({
               <a href="/leaderboard" className="flex flex-col items-center text-xs">
                 <span>🏆</span>
                 <span>Top</span>
+              </a>
+              <a href="/chat" className="flex flex-col items-center text-xs">
+                <span>💬</span>
+                <span>Chat</span>
               </a>
             </div>
           </div>

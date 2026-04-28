@@ -132,6 +132,16 @@ export default function AdminPanel() {
     }
   }
 
+  const handleSetRole = async (userId: string, role: string) => {
+    try {
+      await adminAPI.updateUser(userId, { role })
+      alert(`Role set to ${role}`)
+      loadUsers()
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed')
+    }
+  }
+
   const handleUpdateBalance = async (userId: string) => {
     const newBalance = prompt('Enter new balance:')
     if (!newBalance) return
@@ -332,15 +342,16 @@ export default function AdminPanel() {
                 <thead className="bg-gray-100 dark:bg-gray-700">
                   <tr>
                     <th className="px-4 py-2 text-left">Email</th>
+                    <th className="px-4 py-2 text-left">Username</th>
                     <th className="px-4 py-2 text-left">Balance</th>
-                    <th className="px-4 py-2 text-left">Pro</th>
+                    <th className="px-4 py-2 text-left">Role</th>
                     <th className="px-4 py-2 text-left">Created</th>
                     <th className="px-4 py-2 text-left">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.map((u: any) => (
-                    <tr key={u._id} className="border-t">
+                    <tr key={u._id} className="border-t cursor-pointer hover:bg-gray-50" onClick={() => setSelectedUser(u)}>
                       <td className="px-4 py-2">
                         <div className="flex items-center gap-2">
                           {u.email}
@@ -348,18 +359,27 @@ export default function AdminPanel() {
                           {u.flagged && <span className="px-2 py-1 bg-yellow-500 text-white text-xs rounded">FLAGGED</span>}
                         </div>
                       </td>
+                      <td className="px-4 py-2">{u.username || '-'}</td>
                       <td className="px-4 py-2">{u.balance?.toFixed(2)} USDT</td>
                       <td className="px-4 py-2">
-                        {u.isPro ? '✓ Pro' : 'Free'}
+                        <span className={`px-2 py-1 rounded text-xs ${u.role === 'superadmin' ? 'bg-red-500 text-white' : u.role === 'admin' ? 'bg-blue-500 text-white' : 'bg-gray-500 text-white'}`}>
+                          {u.role || 'user'}
+                        </span>
                       </td>
                       <td className="px-4 py-2 text-sm">{new Date(u.createdAt).toLocaleDateString()}</td>
-                      <td className="px-4 py-2">
+                      <td className="px-4 py-2" onClick={(e) => e.stopPropagation()}>
                         <div className="flex gap-1 flex-wrap">
                           <button
                             onClick={() => handleUpdateBalance(u._id)}
                             className="px-2 py-1 bg-blue-500 text-white text-xs rounded"
                           >
                             Balance
+                          </button>
+                          <button
+                            onClick={() => handleSetRole(u._id, u.role === 'admin' ? 'user' : 'admin')}
+                            className="px-2 py-1 bg-indigo-500 text-white text-xs rounded"
+                          >
+                            {u.role === 'admin' ? 'Remove Admin' : 'Make Admin'}
                           </button>
                           <button
                             onClick={() => handleSetPro(u._id, !u.isPro)}
@@ -372,7 +392,7 @@ export default function AdminPanel() {
                             className={`px-2 py-1 text-white text-xs rounded ${u.flagged ? 'bg-gray-500' : 'bg-yellow-500'}`}
                           >
                             {u.flagged ? 'Unflag' : 'Flag'}
-                          </button>
+</button>
                           <button
                             onClick={() => handleBanUser(u._id, !u.isBanned)}
                             className={`px-2 py-1 text-white text-xs rounded ${u.isBanned ? 'bg-green-500' : 'bg-red-500'}`}

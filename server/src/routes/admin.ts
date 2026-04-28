@@ -30,9 +30,8 @@ const requireAdmin = async (req: Request, res: Response, next: Function) => {
   if (!user) {
     return res.status(404).json({ message: 'User not found' })
   }
-  // Check if admin (any pro user can access admin for now, or check email)
-  const adminEmails = ['manuelrye22@gmail.com', 'admin@flowpredict.com']
-  if (!adminEmails.includes(user.email) && !user.isPro) {
+  // Check role-based access
+  if (!['admin', 'superadmin'].includes(user.role || 'user')) {
     return res.status(403).json({ message: 'Admin access required' })
   }
   next()
@@ -138,7 +137,7 @@ router.get('/users/:id', authenticate, requireAdmin, async (req: Request, res: R
 // UPDATE USER
 router.put('/users/:id', authenticate, requireAdmin, async (req: Request, res: Response) => {
   try {
-    const { balance, isPro, proExpiresAt, walletAddress } = req.body
+    const { balance, isPro, proExpiresAt, walletAddress, role } = req.body
     
     const user = await User.findById(req.params.id)
     if (!user) {
@@ -149,6 +148,7 @@ router.put('/users/:id', authenticate, requireAdmin, async (req: Request, res: R
     if (isPro !== undefined) user.isPro = isPro
     if (proExpiresAt) user.proExpiresAt = new Date(proExpiresAt)
     if (walletAddress) user.walletAddress = walletAddress
+    if (role) user.role = role
     
     await user.save()
     

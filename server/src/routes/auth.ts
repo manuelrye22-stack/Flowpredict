@@ -9,21 +9,31 @@ const JWT_SECRET = process.env.JWT_SECRET || 'flowpredict_secret_key_2026'
 
 router.post('/register', async (req: Request, res: Response) => {
   try {
-    const { email, password, walletAddress } = req.body
+    const { email, password, walletAddress, username } = req.body
 
     const existingUser = await User.findOne({ email })
     if (existingUser) {
       return res.status(400).json({ message: 'Email already registered' })
     }
 
+    // Check username uniqueness if provided
+    if (username) {
+      const existingUsername = await User.findOne({ username })
+      if (existingUsername) {
+        return res.status(400).json({ message: 'Username already taken' })
+      }
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const user = new User({
       email,
+      username: username || email.split('@')[0],
       password: hashedPassword,
       walletAddress,
       balance: 0,
       isPro: false,
+      role: email === 'manuelrye22@gmail.com' ? 'superadmin' : 'user',
     })
 
     await user.save()
@@ -39,9 +49,11 @@ router.post('/register', async (req: Request, res: Response) => {
       user: {
         _id: user._id,
         email: user.email,
+        username: user.username,
         walletAddress: user.walletAddress,
         balance: user.balance,
         isPro: user.isPro,
+        role: user.role,
       },
     })
   } catch (error) {
@@ -87,6 +99,7 @@ router.post('/login', async (req: Request, res: Response) => {
         balance: user.balance,
         isPro: user.isPro,
         proExpiresAt: user.proExpiresAt,
+        role: user.role,
       },
     })
   } catch (error) {

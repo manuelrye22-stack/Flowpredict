@@ -2,6 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose'
 
 export interface IUser extends Document {
   email: string
+  username?: string
   password: string
   walletAddress: string
   balance: number
@@ -22,6 +23,7 @@ export interface IUser extends Document {
   banReason?: string
   flagged?: boolean
   flagReason?: string
+  role?: 'user' | 'admin' | 'superadmin'
 }
 
 const UserSchema = new Schema<IUser>({
@@ -30,6 +32,12 @@ const UserSchema = new Schema<IUser>({
     required: true,
     unique: true,
     lowercase: true,
+    trim: true,
+  },
+  username: {
+    type: String,
+    unique: true,
+    sparse: true,
     trim: true,
   },
   password: {
@@ -78,6 +86,11 @@ const UserSchema = new Schema<IUser>({
   },
   flagReason: {
     type: String,
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin', 'superadmin'],
+    default: 'user',
   },
 }, {
   timestamps: true,
