@@ -554,29 +554,29 @@ export default function Profile() {
 
         {/* Wallet Tab */}
         {activeTab === 'wallet' && (
-          <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-            <h2 className="text-xl font-bold mb-6">💳 My Wallet</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8 mb-6 sm:mb-8">
+            <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">💳 Wallet</h2>
             
             {/* Balance Display */}
-            <div className="bg-gradient-to-r from-nigeria-green to-green-600 rounded-xl p-6 mb-6 text-white">
-              <p className="text-sm opacity-80">Available Balance</p>
-              <p className="text-4xl font-bold">{balance?.balance || 0} USDT</p>
-              <p className="text-sm opacity-80 mt-2">
+            <div className="bg-gradient-to-r from-nigeria-green to-green-600 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 text-white">
+              <p className="text-sm opacity-80">Balance</p>
+              <p className="text-3xl sm:text-4xl font-bold">{balance?.balance || 0} USDT</p>
+              <p className="text-sm opacity-80 mt-1 sm:mt-2">
                 ≈ ₦{((balance?.balance || 0) * 1550).toLocaleString()}
               </p>
             </div>
 
             {/* Actions */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
               <button
                 onClick={() => setShowDeposit(true)}
-                className="py-3 px-4 bg-nigeria-green text-white rounded-lg font-medium hover:bg-green-700"
+                className="py-3 px-4 bg-nigeria-green text-white rounded-lg font-medium hover:bg-green-700 text-sm sm:text-base"
               >
                 💵 Deposit
               </button>
               <button
                 onClick={() => setShowWithdraw(true)}
-                className="py-3 px-4 bg-nigeria-orange text-white rounded-lg font-medium hover:bg-orange-600"
+                className="py-3 px-4 bg-nigeria-orange text-white rounded-lg font-medium hover:bg-orange-600 text-sm sm:text-base"
               >
                 💸 Withdraw
               </button>

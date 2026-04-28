@@ -77,21 +77,21 @@ export default function BrowseBets() {
           </Link>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-4 mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-3 sm:p-4 mb-4 sm:mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 sm:gap-4">
             <input
               type="text"
               placeholder="Search bets..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="px-4 py-2 border rounded-lg"
+              className="w-full px-3 sm:px-4 py-2 border dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg"
             />
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="px-4 py-2 border rounded-lg"
+              className="w-full px-3 sm:px-4 py-2 border dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg"
             >
-              <option value="all">All Categories</option>
+              <option value="all">All</option>
               <option value="Sports">Sports</option>
               <option value="Crypto">Crypto</option>
               <option value="Politics">Politics</option>
@@ -105,18 +105,18 @@ export default function BrowseBets() {
               placeholder="Min Odds"
               value={minOdds}
               onChange={(e) => setMinOdds(e.target.value)}
-              className="px-4 py-2 border rounded-lg"
+              className="w-full px-3 sm:px-4 py-2 border dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg"
             />
             <input
               type="number"
               placeholder="Max Odds"
               value={maxOdds}
               onChange={(e) => setMaxOdds(e.target.value)}
-              className="px-4 py-2 border rounded-lg"
+              className="w-full px-3 sm:px-4 py-2 border dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg"
             />
             <button
               onClick={fetchBets}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="w-full px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
             >
               Refresh
             </button>
@@ -134,49 +134,49 @@ export default function BrowseBets() {
               const isFull = participantsJoined >= bet.requiredParticipants
 
               return (
-                <div key={bet._id} className="bg-white rounded-lg shadow p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <span className="px-3 py-1 bg-gray-100 text-sm rounded-full">
+                <div key={bet._id} className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6">
+                  <div className="flex justify-between items-start mb-3 sm:mb-4">
+                    <span className="px-2 sm:px-3 py-1 bg-gray-100 dark:bg-gray-700 text-xs sm:text-sm rounded-full">
                       {bet.category}
                     </span>
-                    <span className={`px-3 py-1 text-sm rounded-full ${
-                      bet.direction === 'YES' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                    <span className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-full ${
+                      bet.direction === 'YES' ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' : 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300'
                     }`}>
                       {bet.direction}
                     </span>
                   </div>
 
-                  <h3 className="text-lg font-semibold mb-2">{bet.topic}</h3>
+                  <h3 className="text-base sm:text-lg font-semibold mb-2">{bet.topic}</h3>
 
-                  <div className="space-y-2 mb-4">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Stake:</span>
+                  <div className="space-y-1 sm:space-y-2 mb-3 sm:mb-4 text-sm sm:text-base">
+                    <div className="flex justify-between">
+                      <span className="text-gray-500 dark:text-gray-400">Stake:</span>
                       <span className="font-medium">{bet.stake} USDT</span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Odds:</span>
+                    <div className="flex justify-between">
+                      <span className="text-gray-500 dark:text-gray-400">Odds:</span>
                       <span className="font-medium">{bet.odds}x</span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Potential Win:</span>
-                      <span className="font-medium text-green-600">
+                    <div className="flex justify-between">
+                      <span className="text-gray-500 dark:text-gray-400">Win:</span>
+                      <span className="font-medium text-green-600 dark:text-green-400">
                         {(bet.stake * bet.odds).toFixed(2)} USDT
                       </span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Participants:</span>
+                    <div className="flex justify-between">
+                      <span className="text-gray-500 dark:text-gray-400">Players:</span>
                       <span className="font-medium">
                         {participantsJoined}/{bet.requiredParticipants}
                       </span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Expires:</span>
-                      <span className="text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-gray-500 dark:text-gray-400">Expires:</span>
+                      <span className="text-xs dark:text-gray-400">
                         {new Date(bet.expiresAt).toLocaleDateString()}
                       </span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Created:</span>
+                    <div className="flex justify-between">
+                      <span className="text-gray-500 dark:text-gray-400">Created:</span>
                       <span className="text-xs">
                         {new Date(bet.createdAt).toLocaleDateString()}
                       </span>
@@ -195,31 +195,31 @@ export default function BrowseBets() {
                   <button
                     onClick={() => handleAccept(bet._id)}
                     disabled={isFull}
-                    className={`w-full py-2 rounded-lg font-medium ${
+                    className={`w-full py-2 sm:py-3 rounded-lg font-medium text-sm sm:text-base ${
                       isFull
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
                         : 'bg-blue-600 text-white hover:bg-blue-700'
                     }`}
                   >
-                    {isFull ? 'Bet Full' : 'Accept Bet'}
+                    {isFull ? 'Full' : 'Accept'}
                   </button>
 
                   <div className="flex gap-2 mt-3">
                     <button
                       onClick={() => {
                         navigator.clipboard.writeText(`${window.location.origin}/bets/${bet._id}`)
-                        alert('Link copied! Share it with friends.')
+                        alert('Link copied!')
                       }}
-                      className="flex-1 py-2 px-3 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 flex items-center justify-center gap-1"
+                      className="flex-1 py-2 px-2 sm:px-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-xs sm:text-sm hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center gap-1"
                     >
                       🔗 Copy Link
                     </button>
                     <button
                       onClick={() => {
-                        const msg = `Check out this bet on FlowPredict!\n\n"${bet.topic}"\n${bet.direction} at ${bet.odds}x odds\nStake: ${bet.stake} USDT\n\nJoin here: ${window.location.origin}/bets/${bet._id}`
+                        const msg = `Check out this bet!\n"${bet.topic}"\nStake: ${bet.stake} USDT @ ${bet.odds}x\nJoin: ${window.location.origin}/bets/${bet._id}`
                         window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank')
                       }}
-                      className="flex-1 py-2 px-3 bg-green-500 text-white rounded-lg text-sm hover:bg-green-600 flex items-center justify-center gap-1"
+                      className="flex-1 py-2 px-2 sm:px-3 bg-green-500 text-white rounded-lg text-xs sm:text-sm hover:bg-green-600 flex items-center justify-center gap-1"
                     >
                       📱 WhatsApp
                     </button>
