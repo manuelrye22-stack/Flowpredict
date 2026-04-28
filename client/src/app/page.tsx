@@ -140,12 +140,12 @@ export default function Home() {
       </div>
 
       {/* Live Bets Section */}
-      <div className="py-16 bg-white">
+      <div className="py-16 bg-white dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h2 className="text-3xl font-bold">🔥 Live Bets</h2>
-              <p className="text-gray-600 mt-1">See what others are betting on right now</p>
+              <h2 className="text-3xl font-bold dark:text-white">🔥 Live Bets</h2>
+              <p className="text-gray-600 dark:text-gray-400 mt-1">See what others are betting on right now</p>
             </div>
             <Link href="/bets" className="text-nigeria-green font-semibold hover:underline flex items-center">
               See More <ArrowRight className="ml-1 w-4 h-4" />
@@ -155,17 +155,17 @@ export default function Home() {
           {featuredBets.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {featuredBets.map((bet: any) => (
-                <div key={bet._id} className="bg-gray-50 rounded-xl p-6 border border-gray-200 hover:border-nigeria-green transition">
+                <div key={bet._id} className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6 border border-gray-200 dark:border-gray-600 hover:border-nigeria-green transition">
                   <div className="flex justify-between items-start mb-4">
-                    <span className="px-3 py-1 bg-gray-200 text-sm rounded-full">{bet.category}</span>
-                    <span className={`px-3 py-1 text-sm rounded-full ${bet.direction === 'YES' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                    <span className="px-3 py-1 bg-gray-200 dark:bg-gray-600 text-sm rounded-full dark:text-gray-300">{bet.category}</span>
+                    <span className={`px-3 py-1 text-sm rounded-full ${bet.direction === 'YES' ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' : 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300'}`}>
                       {bet.direction}
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold mb-3">{bet.topic}</h3>
+                  <h3 className="text-lg font-semibold mb-3 dark:text-white">{bet.topic}</h3>
                   <div className="grid grid-cols-3 gap-4 mb-4 text-sm">
                     <div>
-                      <p className="text-gray-500">Stake</p>
+                      <p className="text-gray-500 dark:text-gray-400">Stake</p>
                       <p className="font-semibold">{bet.stake} USDT</p>
                     </div>
                     <div>
@@ -258,55 +258,55 @@ export default function Home() {
       <div className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900">How It Works</h2>
+            <h2 className="text-3xl font-bold dark:text-white">How It Works</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="text-center p-6">
-              <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-green-100 dark:bg-green-900 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="w-8 h-8 text-nigeria-green" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">1. Create a Bet</h3>
-              <p className="text-gray-600">Set your prediction, odds, and stake on any topic you want.</p>
+              <h3 className="text-lg font-semibold mb-2 dark:text-white">1. Create a Bet</h3>
+              <p className="text-gray-600 dark:text-gray-400">Set your prediction, odds, and stake on any topic you want.</p>
             </div>
             <div className="text-center p-6">
-              <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-green-100 dark:bg-green-900 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Zap className="w-8 h-8 text-nigeria-green" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">2. Get Matched</h3>
-              <p className="text-gray-600">Another user takes the opposing side. Funds are held in escrow.</p>
+              <h3 className="text-lg font-semibold mb-2 dark:text-white">2. Get Matched</h3>
+              <p className="text-gray-600 dark:text-gray-400">Another user takes the opposing side. Funds are held in escrow.</p>
             </div>
             <div className="text-center p-6">
-              <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-green-100 dark:bg-green-900 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <TrendingUp className="w-8 h-8 text-nigeria-green" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">3. Wait for Result</h3>
-              <p className="text-gray-600">When your prediction comes true or false, the bet resolves.</p>
+              <h3 className="text-lg font-semibold mb-2 dark:text-white">3. Wait for Result</h3>
+              <p className="text-gray-600 dark:text-gray-400">When your prediction comes true or false, the bet resolves.</p>
             </div>
             <div className="text-center p-6">
-              <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-green-100 dark:bg-green-900 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Shield className="w-8 h-8 text-nigeria-green" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">4. Win Crypto</h3>
-              <p className="text-gray-600">Winner gets the pot automatically credited to their wallet.</p>
+              <h3 className="text-lg font-semibold mb-2 dark:text-white">4. Win Crypto</h3>
+              <p className="text-gray-600 dark:text-gray-400">Winner gets the pot automatically credited to their wallet.</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Categories with Subcategories */}
-      <div className="py-16 bg-white">
+      <div className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900">Bet on Anything</h2>
+            <h2 className="text-3xl font-bold dark:text-white">Bet on Anything</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {categories.map((cat) => (
-              <div key={cat.name} className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition">
+              <div key={cat.name} className="bg-white dark:bg-gray-700 rounded-xl p-6 shadow-md hover:shadow-lg transition border border-gray-200 dark:border-gray-600">
                 <div className="text-4xl mb-3">{cat.icon}</div>
-                <h3 className="text-xl font-bold mb-2">{cat.name}</h3>
+                <h3 className="text-xl font-bold mb-2 dark:text-white">{cat.name}</h3>
                 <div className="flex flex-wrap gap-1">
                   {cat.sub.map((sub) => (
-                    <span key={sub} className="text-xs bg-gray-100 px-2 py-1 rounded-full">{sub}</span>
+                    <span key={sub} className="text-xs bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded-full dark:text-gray-300">{sub}</span>
                   ))}
                 </div>
               </div>
