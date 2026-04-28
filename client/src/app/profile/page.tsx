@@ -638,7 +638,17 @@ export default function Profile() {
         {showDeposit && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-md w-full mx-4">
-              <h3 className="text-lg font-bold mb-4">💵 Deposit</h3>
+              <h3 className="text-lg font-bold mb-2">💵 Deposit Crypto</h3>
+               
+               <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg mb-4 text-sm">
+                 <p className="font-medium text-blue-800 dark:text-blue-200 mb-1">📋 How to deposit:</p>
+                 <ol className="list-decimal list-inside text-blue-700 dark:text-blue-300 text-xs space-y-1">
+                   <li>Copy the address below</li>
+                   <li>Send USDT or LTC from your wallet</li>
+                   <li>Come back and enter your transaction hash</li>
+                   <li>Admin will verify and credit your balance</li>
+                 </ol>
+               </div>
                
               {/* USDT Section */}
               <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-green-50 dark:from-gray-700 dark:to-gray-600 rounded-lg border border-green-200 dark:border-gray-600">
@@ -711,17 +721,49 @@ export default function Profile() {
                 </div>
               )}
 
-              {/* Manual Link */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Link LTC Deposit (paste amount):</label>
+              {/* Link USDT Deposit */}
+              <div className="mb-4 p-4 bg-green-50 dark:bg-gray-700 rounded-lg border border-green-200 dark:border-gray-600">
+                <label className="block text-sm font-medium mb-2">Link USDT Deposit (TX Hash):</label>
                 <input
-                  type="number"
-                  step="0.001"
-                  value={ltcAmount}
-                  onChange={(e) => setLtcAmount(e.target.value)}
-                  className="w-full px-4 py-2 border dark:border-gray-600 dark:bg-gray-700 rounded-lg text-sm"
-                  placeholder="Amount in LTC"
+                  type="text"
+                  value={depositTxHash}
+                  onChange={(e) => setDepositTxHash(e.target.value)}
+                  className="w-full px-4 py-2 border dark:border-gray-600 dark:bg-gray-700 rounded-lg text-sm font-mono"
+                  placeholder="Paste transaction hash from your wallet"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Find this in your wallet's "Sent Transactions"
+                </p>
+              </div>
+
+              <button
+                onClick={handleDepositLink}
+                disabled={!depositTxHash || processing}
+                className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 disabled:opacity-50 font-medium mb-3"
+              >
+                {processing ? 'Processing...' : 'Link USDT Deposit'}
+              </button>
+
+              {/* Link LTC Deposit */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-2">Link LTC Deposit:</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    type="number"
+                    step="0.001"
+                    value={ltcAmount}
+                    onChange={(e) => setLtcAmount(e.target.value)}
+                    className="w-full px-4 py-2 border dark:border-gray-600 dark:bg-gray-700 rounded-lg text-sm"
+                    placeholder="Amount in LTC"
+                  />
+                  <button
+                    onClick={handleLtcDeposit}
+                    disabled={!ltcAmount || processing}
+                    className="bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 disabled:opacity-50 text-sm"
+                  >
+                    {processing ? '...' : 'Credit LTC'}
+                  </button>
+                </div>
               </div>
 
               <div className="flex gap-3">
