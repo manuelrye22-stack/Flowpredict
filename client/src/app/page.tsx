@@ -144,7 +144,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900">🔥 Live Bets</h2>
+              <h2 className="text-3xl font-bold">🔥 Live Bets</h2>
               <p className="text-gray-600 mt-1">See what others are betting on right now</p>
             </div>
             <Link href="/bets" className="text-nigeria-green font-semibold hover:underline flex items-center">

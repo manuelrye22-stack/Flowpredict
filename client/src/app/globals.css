@@ -2,41 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 26, 26, 26;
-  --background-rgb: 245, 245, 245;
-}
-
-.dark {
-  --foreground-rgb: 245, 245, 245;
-  --background-rgb: 15, 15, 23;
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-rgb));
-}
-
-/* Mobile-first responsive */
-* {
-  box-sizing: border-box;
-}
-
-html {
-  -webkit-text-size-adjust: 100%;
-  -webkit-tap-highlight-color: transparent;
-  scroll-behavior: smooth;
-}
-
-/* Touch-friendly tap targets */
-@media (max-width: 640px) {
-  button, a, input, select {
-    min-height: 44px;
-    min-width: 44px;
-  }
-  
-  input, select, textarea {
-    font-size: 16px;
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
   }
 }
 

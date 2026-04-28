@@ -17,6 +17,7 @@ export default function ThemeToggle() {
     const newMode = !darkMode
     setDarkMode(newMode)
     localStorage.setItem('darkMode', String(newMode))
+    
     if (newMode) {
       document.documentElement.classList.add('dark')
     } else {
