@@ -81,7 +81,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 // CREATE BET
 router.post('/', authenticate, async (req: Request, res: Response) => {
   try {
-    const { topic, category, odds, stake, direction, expiresAt } = req.body
+    const { topic, category, odds, stake, direction, expiresAt, betType, minParticipants } = req.body
 
     // Validate odds (must be at least 2 for multi-participant model)
     if (odds < 2 || odds > 10) {
@@ -115,6 +115,10 @@ router.post('/', authenticate, async (req: Request, res: Response) => {
       description: `Created bet: ${topic}`,
     })
 
+    // Handle open vs fixed bet types
+    const isOpenBet = betType === 'open'
+    const minParts = minParticipants ? parseInt(minParticipants) : 2
+    
     // Create bet with creator as first participant
     const bet = new Bet({
       creatorId: user._id,
@@ -123,14 +127,17 @@ router.post('/', authenticate, async (req: Request, res: Response) => {
       odds,
       stake,
       direction,
-      requiredParticipants: odds, // e.g., 3x odds = 3 participants needed
+      betType: isOpenBet ? 'open' : 'fixed',
+      minParticipants: isOpenBet ? minParts : undefined,
+      requiredParticipants: isOpenBet ? minParts : odds,
       participants: [{
         userId: user._id,
         direction,
         stake,
         joinedAt: new Date()
       }],
-      status: odds === 1 ? 'MATCHED' : 'OPEN', // 1x would match immediately (rare)
+      // Open bets start as PENDING until both sides have participants
+      status: isOpenBet ? 'PENDING' : (odds === 1 ? 'MATCHED' : 'OPEN'),
       expiresAt: expiresAt ? new Date(expiresAt) : undefined,
     })
 
@@ -168,9 +175,12 @@ const bet = await Bet.findById(req.params.id)
       return res.status(400).json({ message: 'Insufficient balance' })
     }
 
-    // Check if user is trying to take opposite direction
+    // For fixed bets: must join opposite direction
+    // For open bets: can join any direction
     const creatorDirection = bet.participants[0].direction
-    const joiningDirection = creatorDirection === 'YES' ? 'NO' : 'YES'
+    const joiningDirection = bet.betType === 'open' 
+      ? (req.body.direction || (creatorDirection === 'YES' ? 'NO' : 'YES'))
+      : (creatorDirection === 'YES' ? 'NO' : 'YES')
 
     // Deduct stake
     user.balance -= bet.stake
@@ -190,6 +200,18 @@ const bet = await Bet.findById(req.params.id)
       stake: bet.stake,
       joinedAt: new Date()
     })
+
+    // Check if bet should become MATCHED
+    if (bet.betType === 'open') {
+      // For open bets: need at least 1 YES and 1 NO
+      const hasYes = bet.participants.some((p: any) => p.direction === 'YES')
+      const hasNo = bet.participants.some((p: any) => p.direction === 'NO')
+      if (hasYes && hasNo) {
+        bet.status = 'MATCHED'
+      }
+    } else if (bet.participants.length >= bet.requiredParticipants) {
+      bet.status = 'MATCHED'
+    }
 
     // Notify bet creator
     const creator = await User.findById(bet.creatorId)
@@ -230,7 +252,7 @@ const bet = await Bet.findById(req.params.id)
 // RESOLVE BET
 router.post('/:id/resolve', authenticate, async (req: Request, res: Response) => {
   try {
-    const { winnerId, resolution } = req.body
+    const { winnerId, resolution, winningDirection } = req.body
 
     const bet = await Bet.findById(req.params.id)
     
@@ -241,6 +263,9 @@ router.post('/:id/resolve', authenticate, async (req: Request, res: Response) =>
     if (bet.status !== 'MATCHED') {
       return res.status(400).json({ message: 'Bet cannot be resolved' })
     }
+
+    // Determine winning direction if not provided
+    const finalWinningDirection = winningDirection || (bet.participants.find((p: any) => p.userId.toString() === winnerId)?.direction || 'YES')
 
     // Verify winner is a participant
     const isParticipant = bet.participants.some(
@@ -255,35 +280,43 @@ router.post('/:id/resolve', authenticate, async (req: Request, res: Response) =>
       return res.status(404).json({ message: 'Winner not found' })
     }
 
-    // Calculate payout: total pool = stake × number of participants = stake × odds
-    const totalPool = bet.stake * bet.requiredParticipants
-    const payout = totalPool // Winner gets everything (stake × odds)
+    // Count participants on each side
+    const yesParticipants = bet.participants.filter((p: any) => p.direction === 'YES')
+    const noParticipants = bet.participants.filter((p: any) => p.direction === 'NO')
+    
+    const totalPool = bet.stake * bet.participants.length
+    
+    // For open bets: split pool among winners
+    // For fixed bets: winner takes all
+    const winners = finalWinningDirection === 'YES' ? yesParticipants : noParticipants
+    
+    // Split pool evenly among winners
+    const winnerCount = winners.length
+    const payoutPerWinner = totalPool / winnerCount
 
-    // Give winnings to winner
-    winner.balance += payout
-    await winner.save()
-
-    // Find opponent info
-    const opponents = bet.participants.filter((p: any) => p.userId.toString() !== winnerId)
-    const opponent = opponents[0]
-    const opponentUser = opponent ? await User.findById(opponent.userId) : null
-
-    // Create transaction for winner with receipt details
-    await Transaction.create({
-      userId: winner._id,
-      type: 'bet_win',
-      amount: payout,
-      status: 'completed',
-      betId: bet._id,
-      description: `Won bet: ${bet.topic}`,
-      betTopic: bet.topic,
-      betOdds: bet.odds,
-      opponentId: opponent?.userId?.toString(),
-      opponentEmail: opponentUser?.email,
-    })
+    // Give winnings to all winners
+    for (const w of winners) {
+      const winnerUser = await User.findById(w.userId)
+      if (winnerUser) {
+        winnerUser.balance += payoutPerWinner
+        await winnerUser.save()
+        
+        await Transaction.create({
+          userId: winnerUser._id,
+          type: 'bet_win',
+          amount: payoutPerWinner,
+          status: 'completed',
+          betId: bet._id,
+          description: `Won bet: ${bet.topic} (split ${winnerCount} ways)`,
+          betTopic: bet.topic,
+          betOdds: bet.odds,
+        })
+      }
+    }
 
     // Create loss transactions for losers
-    for (const opp of opponents) {
+    const losers = winningDirection === 'YES' ? noParticipants : yesParticipants
+    for (const opp of losers) {
       const oppUser = await User.findById(opp.userId)
       if (oppUser) {
         await Transaction.create({
@@ -295,24 +328,22 @@ router.post('/:id/resolve', authenticate, async (req: Request, res: Response) =>
           description: `Lost bet: ${bet.topic}`,
           betTopic: bet.topic,
           betOdds: bet.odds,
-          opponentId: winner._id.toString(),
-          opponentEmail: winner.email,
         })
       }
     }
 
     // Update bet status
-    bet.winnerId = winner._id
-    bet.resolution = resolution || 'Resolved'
+    bet.winnerId = winnerId
+    bet.resolution = resolution || `Resolved: ${finalWinningDirection} wins`
     bet.status = 'RESOLVED'
     await bet.save()
 
     res.json({ 
       message: 'Bet resolved', 
-      winner: winner.email,
-      payout,
-      pool: totalPool,
-      bet 
+      winningDirection: finalWinningDirection,
+      totalPool,
+      winnersCount: winnerCount,
+      payoutPerWinner,
     })
   } catch (error) {
     console.error('Resolve bet error:', error)

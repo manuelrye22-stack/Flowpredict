@@ -14,9 +14,11 @@ export interface IBet extends Document {
   odds: number
   stake: number
   direction: 'YES' | 'NO'
+  betType?: 'fixed' | 'open'
+  minParticipants?: number
   participants: IParticipant[]
   requiredParticipants: number
-  status: 'OPEN' | 'MATCHED' | 'RESOLVED' | 'DISPUTED' | 'EXPIRED' | 'CLOSED'
+  status: 'OPEN' | 'MATCHED' | 'RESOLVED' | 'DISPUTED' | 'EXPIRED' | 'CLOSED' | 'PENDING'
   winnerId?: mongoose.Types.ObjectId
   resolution?: string
   createdAt: Date
