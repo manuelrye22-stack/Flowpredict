@@ -11,7 +11,15 @@ import Deposit from '../models/Deposit.js'
 const router = Router()
 
 const JWT_SECRET = process.env.JWT_SECRET || 'flowpredict_secret_key_2026'
+
 const PLATFORM_WALLET = process.env.PLATFORM_WALLET || 'TDPxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+const LTC_WALLET = process.env.LTC_WALLET || '' // Your Litecoin address
+
+const EXCHANGE_RATES = {
+  USDT: 1550,
+  LTC: 185000, // 1 LTC = ₦185,000
+  BTC: 155000000,
+}
 
 const authenticate = (req: Request, res: Response, next: Function) => {
   const token = req.headers.authorization?.split(' ')[1]
@@ -50,8 +58,12 @@ router.get('/deposit-address', authenticate, async (req: Request, res: Response)
     }
 
     res.json({ 
-      address: PLATFORM_WALLET,
-      note: 'Send USDT (TRC-20) to this address. Deposits are auto-detected within 30 seconds.',
+      addresses: {
+        USDT: PLATFORM_WALLET,
+        LTC: LTC_WALLET || null
+      },
+      rates: EXCHANGE_RATES,
+      note: 'Send crypto to the address above. Deposits are auto-detected within 30 seconds.',
     })
   } catch (error) {
     res.status(500).json({ message: 'Failed to get deposit address' })
@@ -107,6 +119,65 @@ router.post('/deposit/link', authenticate, async (req: Request, res: Response) =
   } catch (error) {
     console.error('Deposit link error:', error)
     res.status(500).json({ message: 'Failed to link deposit' })
+  }
+})
+
+// LINK LITECOIN DEPOSIT MANUALLY
+router.post('/deposit/ltc', authenticate, async (req: Request, res: Response) => {
+  try {
+    const { txHash, amount } = req.body
+
+    if (!txHash || !amount) {
+      return res.status(400).json({ message: 'Transaction hash and amount required' })
+    }
+
+    const user = await User.findById(req.body.userId)
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    const existing = await Deposit.findOne({ txHash, status: 'credited' })
+    if (existing) {
+      return res.status(400).json({ message: 'Deposit already credited' })
+    }
+
+    if (!LTC_WALLET) {
+      return res.status(500).json({ message: 'Litecoin deposits not configured' })
+    }
+
+    const nairaAmount = amount * EXCHANGE_RATES.LTC
+    const usdtEquivalent = nairaAmount / EXCHANGE_RATES.USDT
+
+    await Deposit.create({
+      userId: user._id,
+      amount: usdtEquivalent,
+      txHash,
+      currency: 'LTC',
+      status: 'credited',
+      creditedAt: new Date()
+    })
+
+    user.balance += usdtEquivalent
+    await user.save()
+
+    await Transaction.create({
+      userId: user._id,
+      type: 'deposit',
+      amount: usdtEquivalent,
+      status: 'completed',
+      txHash,
+      description: `LTC deposit: ${amount} LTC (₦${nairaAmount.toLocaleString()})`,
+    })
+
+    res.json({ 
+      message: 'Litecoin deposit credited!', 
+      balance: user.balance,
+      amount: usdtEquivalent,
+      nairaAmount,
+    })
+  } catch (error) {
+    console.error('LTC deposit error:', error)
+    res.status(500).json({ message: 'Failed to process LTC deposit' })
   }
 })
 

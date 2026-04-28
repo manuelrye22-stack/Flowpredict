@@ -24,14 +24,16 @@ export default function Profile() {
   const [showWithdraw, setShowWithdraw] = useState(false)
   const [showProUpgrade, setShowProUpgrade] = useState(false)
   const [depositTxHash, setDepositTxHash] = useState('')
+  const [depositAddress, setDepositAddress] = useState('')
+  const [ltcAddress, setLtcAddress] = useState('')
+  const [ltcAmount, setLtcAmount] = useState('')
+  const [depositSuccess, setDepositSuccess] = useState(false)
+  const [gettingFaucet, setGettingFaucet] = useState(false)
+  const [processing, setProcessing] = useState(false)
   const [withdrawAmount, setWithdrawAmount] = useState('')
   const [withdrawTip, setWithdrawTip] = useState('0')
   const [withdrawAddress, setWithdrawAddress] = useState('')
-  const [processing, setProcessing] = useState(false)
-  const [gettingFaucet, setGettingFaucet] = useState(false)
   const [copied, setCopied] = useState(false)
-  const [depositAddress, setDepositAddress] = useState('')
-  const [depositSuccess, setDepositSuccess] = useState(false)
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -59,7 +61,13 @@ export default function Profile() {
       setMyBets(betsRes.data)
       setRatings(ratingsRes.data.ratings)
       setRatingStats({ average: ratingsRes.data.average, count: ratingsRes.data.count })
-      setDepositAddress(depositRes.data.address)
+      
+      if (depositRes.data.addresses) {
+        setDepositAddress(depositRes.data.addresses.USDT || '')
+        setLtcAddress(depositRes.data.addresses.LTC || '')
+      } else {
+        setDepositAddress(depositRes.data.address)
+      }
     } catch (err) {
       console.error(err)
     } finally {
@@ -178,13 +186,36 @@ export default function Profile() {
     setProcessing(true)
     try {
       await walletAPI.linkDeposit({ txHash: depositTxHash })
-      alert('Deposit linked successfully!')
+      alert('USDT Deposit linked successfully!')
       setShowDeposit(false)
       setDepositTxHash('')
       setDepositSuccess(true)
       fetchData()
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to link deposit')
+    } finally {
+      setProcessing(false)
+    }
+  }
+
+  const handleLtcDeposit = async () => {
+    if (!ltcAmount || parseFloat(ltcAmount) <= 0) {
+      alert('Please enter amount')
+      return
+    }
+    setProcessing(true)
+    try {
+      await walletAPI.linkLtcDeposit({ 
+        txHash: depositTxHash || 'manual-' + Date.now(),
+        amount: parseFloat(ltcAmount)
+      })
+      alert('Litecoin deposit credited! Check your balance.')
+      setShowDeposit(false)
+      setDepositTxHash('')
+      setLtcAmount('')
+      fetchData()
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to process LTC deposit')
     } finally {
       setProcessing(false)
     }
@@ -602,17 +633,18 @@ export default function Profile() {
 {/* Deposit Modal */}
         {showDeposit && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
-              <h3 className="text-lg font-bold mb-4">💵 Deposit USDT</h3>
-              
-              <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg border border-green-200">
-                <p className="font-medium text-sm mb-2">1. Send USDT to this address:</p>
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-md w-full mx-4">
+              <h3 className="text-lg font-bold mb-4">💵 Deposit</h3>
+               
+              {/* USDT Section */}
+              <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-green-50 dark:from-gray-700 dark:to-gray-600 rounded-lg border border-green-200 dark:border-gray-600">
+                <p className="font-medium text-sm mb-2">USDT (TRC-20):</p>
                 <div className="flex">
                   <input
                     type="text"
                     value={depositAddress}
                     readOnly
-                    className="flex-1 px-3 py-2 border rounded-l-lg bg-gray-50 text-sm font-mono"
+                    className="flex-1 px-3 py-2 border dark:border-gray-600 dark:bg-gray-700 rounded-l-lg text-xs font-mono"
                   />
                   <button
                     onClick={() => {
@@ -622,54 +654,69 @@ export default function Profile() {
                     }}
                     className="bg-nigeria-green text-white px-3 py-2 rounded-r-lg text-sm"
                   >
-                    {copied ? 'Copied!' : 'Copy'}
+                    {copied ? '✓' : 'Copy'}
                   </button>
                 </div>
-                <p className="text-xs text-gray-500 mt-2">
-                  Network: <span className="font-medium">TRC-20 (Tron)</span>
-                </p>
               </div>
 
-              <div className="mb-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                <p className="text-sm">
-                  <span className="font-medium">Auto-detect:</span> Deposits are automatically detected within 30 seconds of confirmation.
-                </p>
-              </div>
+              {/* LTC Section */}
+              {ltcAddress && (
+                <div className="mb-4 p-4 bg-orange-50 dark:bg-gray-700 rounded-lg border border-orange-200 dark:border-gray-600">
+                  <p className="font-medium text-sm mb-2">Litecoin (LTC):</p>
+                  <div className="flex">
+                    <input
+                      type="text"
+                      value={ltcAddress}
+                      readOnly
+                      className="flex-1 px-3 py-2 border dark:border-gray-600 dark:bg-gray-700 rounded-l-lg text-xs font-mono"
+                    />
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(ltcAddress)
+                        setCopied(true)
+                        setTimeout(() => setCopied(false), 2000)
+                      }}
+                      className="bg-orange-500 text-white px-3 py-2 rounded-r-lg text-sm"
+                    >
+                      {copied ? '✓' : 'Copy'}
+                    </button>
+                  </div>
+                </div>
+              )}
 
+              {/* Manual Link */}
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">2. Enter TXID to link manually (optional backup):</label>
+                <label className="block text-sm font-medium mb-2">Link LTC Deposit (paste amount):</label>
                 <input
-                  type="text"
-                  value={depositTxHash}
-                  onChange={(e) => setDepositTxHash(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg text-sm font-mono"
-                  placeholder="Enter transaction hash if auto-detect fails"
+                  type="number"
+                  step="0.001"
+                  value={ltcAmount}
+                  onChange={(e) => setLtcAmount(e.target.value)}
+                  className="w-full px-4 py-2 border dark:border-gray-600 dark:bg-gray-700 rounded-lg text-sm"
+                  placeholder="Amount in LTC"
                 />
               </div>
 
               <div className="flex gap-3">
                 <button
-                  onClick={handleDepositLink}
-                  disabled={!depositTxHash || processing}
-                  className="flex-1 bg-nigeria-green text-white py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 text-sm"
+                  onClick={handleLtcDeposit}
+                  disabled={!ltcAmount || processing}
+                  className="flex-1 bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 disabled:opacity-50 text-sm"
                 >
-                  {processing ? 'Checking...' : 'Link Deposit'}
+                  {processing ? 'Processing...' : 'Credit LTC'}
                 </button>
                 <button
                   type="button"
                   onClick={() => {
                     setShowDeposit(false)
                     setDepositTxHash('')
+                    setLtcAmount('')
                   }}
-                  className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg hover:bg-gray-300 text-sm"
+                  className="flex-1 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 py-2 rounded-lg text-sm"
                 >
                   Close
                 </button>
               </div>
-              
-              <p className="text-xs text-gray-500 mt-3">
-                Deposits are processed automatically. If not credited in 1 minute, use TXID to link.
-              </p>
             </div>
           </div>
         )}

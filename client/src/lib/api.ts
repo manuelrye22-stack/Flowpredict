@@ -38,6 +38,8 @@ export const walletAPI = {
     api.post('/wallet/deposit', data),
   linkDeposit: (data: { txHash: string }) =>
     api.post('/wallet/deposit/link', data),
+  linkLtcDeposit: (data: { txHash: string; amount: number }) =>
+    api.post('/wallet/deposit/ltc', data),
   withdraw: (data: { amount: number; address: string; tipAmount?: number }) =>
     api.post('/wallet/withdraw', data),
   faucet: () => api.post('/wallet/faucet'),
