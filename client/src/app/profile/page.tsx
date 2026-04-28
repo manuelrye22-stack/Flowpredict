@@ -651,10 +651,22 @@ export default function Profile() {
                     className="flex-1 px-3 py-2 border dark:border-gray-600 dark:bg-gray-700 rounded-l-lg text-xs font-mono"
                   />
                   <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(depositAddress)
-                      setCopied(true)
-                      setTimeout(() => setCopied(false), 2000)
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(depositAddress)
+                        setCopied(true)
+                        setTimeout(() => setCopied(false), 2000)
+                      } catch (err) {
+                        // Fallback for HTTP
+                        const input = document.createElement('input')
+                        input.value = depositAddress
+                        document.body.appendChild(input)
+                        input.select()
+                        document.execCommand('copy')
+                        document.body.removeChild(input)
+                        setCopied(true)
+                        setTimeout(() => setCopied(false), 2000)
+                      }
                     }}
                     className="bg-nigeria-green text-white px-3 py-2 rounded-r-lg text-sm"
                   >
@@ -674,11 +686,22 @@ export default function Profile() {
                       readOnly
                       className="flex-1 px-3 py-2 border dark:border-gray-600 dark:bg-gray-700 rounded-l-lg text-xs font-mono"
                     />
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(ltcAddress)
-                        setCopied(true)
-                        setTimeout(() => setCopied(false), 2000)
+<button
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(ltcAddress)
+                          setCopied(true)
+                          setTimeout(() => setCopied(false), 2000)
+                        } catch (err) {
+                          const input = document.createElement('input')
+                          input.value = ltcAddress
+                          document.body.appendChild(input)
+                          input.select()
+                          document.execCommand('copy')
+                          document.body.removeChild(input)
+                          setCopied(true)
+                          setTimeout(() => setCopied(false), 2000)
+                        }
                       }}
                       className="bg-orange-500 text-white px-3 py-2 rounded-r-lg text-sm"
                     >
