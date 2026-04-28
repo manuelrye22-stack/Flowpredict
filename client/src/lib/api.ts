@@ -1,10 +1,10 @@
 import axios from 'axios'
 
-// Railway server URL (fallback if env var not set)
-const SERVER_URL = 'https://flowpredict-production.up.railway.app'
+// Railway server URL - use the correct server URL
+const SERVER_URL = process.env.NEXT_PUBLIC_API_URL || 'https://intelligent-prosperity-production-5eed.up.railway.app'
 
 // Use env var if set, otherwise use server URL
-let API_URL = process.env.NEXT_PUBLIC_API_URL || `${SERVER_URL}/api`
+let API_URL = SERVER_URL
 
 // Clean up API_URL: ensure it ends with /api
 if (API_URL.endsWith('/')) {
