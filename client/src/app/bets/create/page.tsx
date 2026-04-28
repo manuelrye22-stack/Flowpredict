@@ -8,7 +8,7 @@ const categories = ['Sports', 'Crypto', 'Politics', 'Entertainment', 'Weather', 
 
 export default function CreateBet() {
   const router = useRouter()
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     topic: '',
     category: 'Sports',
     odds: 2.0,
@@ -16,7 +16,9 @@ export default function CreateBet() {
     direction: 'YES' as 'YES' | 'NO',
     expiresAt: '',
     isPrivate: false,
-    inviteCode: ''
+    inviteCode: '',
+    betType: 'fixed' as 'fixed' | 'open',
+    minParticipants: 2,
   })
   const [verificationType, setVerificationType] = useState<'manual' | 'consensus' | 'api'>('manual')
   const [verificationValue, setVerificationValue] = useState('')
@@ -112,6 +114,42 @@ const nairaValue = formData.stake * 1550
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Bet Type Toggle */}
+            <div className="bg-gray-100 p-4 rounded-lg">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Bet Type
+              </label>
+              <div className="flex gap-4">
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="betType"
+                    checked={formData.betType === 'fixed'}
+                    onChange={() => setFormData({ ...formData, betType: 'fixed' })}
+                    className="mr-2"
+                  />
+                  <span className="font-medium">Fixed</span>
+                  <span className="text-xs text-gray-500 ml-1">(opposite only)</span>
+                </label>
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="betType"
+                    checked={formData.betType === 'open'}
+                    onChange={() => setFormData({ ...formData, betType: 'open' })}
+                    className="mr-2"
+                  />
+                  <span className="font-medium">Open</span>
+                  <span className="text-xs text-gray-500 ml-1">(join any side)</span>
+                </label>
+              </div>
+              {formData.betType === 'open' && (
+                <p className="text-xs text-blue-600 mt-2">
+                  Open: Winners split the pool. Needs YES + NO to activate.
+                </p>
+              )}
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 What do you want to bet on?
@@ -263,22 +301,45 @@ const nairaValue = formData.stake * 1550
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Odds (multiplier)
-                </label>
-                <input
-                  type="number"
-                  step="1"
-                  min="2"
-                  max="10"
-                  required
-                  value={formData.odds}
-                  onChange={(e) => setFormData({ ...formData, odds: parseInt(e.target.value) })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-nigeria-green focus:border-transparent"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  {formData.odds}x odds = {formData.odds} people needed. Winner takes whole pool!
-                </p>
+                {formData.betType === 'fixed' ? (
+                  <>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Odds (multiplier)
+                    </label>
+                    <input
+                      type="number"
+                      step="1"
+                      min="2"
+                      max="10"
+                      required
+                      value={formData.odds}
+                      onChange={(e) => setFormData({ ...formData, odds: parseInt(e.target.value) })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      {formData.odds}x = {formData.odds} people. Winner takes all!
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Min Participants
+                    </label>
+                    <input
+                      type="number"
+                      step="1"
+                      min="2"
+                      max="10"
+                      required
+                      value={formData.minParticipants}
+                      onChange={(e) => setFormData({ ...formData, minParticipants: parseInt(e.target.value) })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Needed for bet to activate
+                    </p>
+                  </>
+                )}
               </div>
 
               <div>
