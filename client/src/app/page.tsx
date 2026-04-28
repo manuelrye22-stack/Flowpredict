@@ -94,7 +94,7 @@ export default function Home() {
         category: quickForm.category,
         odds: quickForm.odds,
         stake: quickForm.stake,
-        direction: quickForm.direction
+        direction: quickForm.direction as 'YES' | 'NO'
       })
       alert('Bet created! View it in your dashboard.')
       setShowQuickCreate(false)

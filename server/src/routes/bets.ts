@@ -201,6 +201,21 @@ router.post('/:id/accept', authenticate, async (req: Request, res: Response) => 
       joinedAt: new Date()
     })
 
+    // Notify bet creator
+    const creator = await User.findById(bet.creatorId)
+    if (creator && creator._id.toString() !== user._id.toString()) {
+      const creatorNotifs = creator.notifications || []
+      creatorNotifs.unshift({
+        type: 'bet_join',
+        title: 'Someone joined your bet!',
+        message: `${user.email.split('@')[0]} accepted your bet "${bet.topic}"`,
+        read: false,
+        createdAt: new Date()
+      })
+      creator.notifications = creatorNotifs.slice(0, 50) // Keep last 50
+      await creator.save()
+    }
+
     // Check if bet is now full
     if (bet.participants.length >= bet.requiredParticipants) {
       bet.status = 'MATCHED'
