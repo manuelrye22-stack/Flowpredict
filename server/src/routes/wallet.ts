@@ -43,7 +43,7 @@ router.get('/', authenticate, async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'User not found' })
     }
 
-    res.json({ balance: user.balance })
+    res.json({ balance: user.balance, lastDepositMethod: user.lastDepositMethod })
   } catch (error) {
     res.status(500).json({ message: 'Failed to get balance' })
   }
@@ -158,6 +158,7 @@ router.post('/deposit/ltc', authenticate, async (req: Request, res: Response) =>
     })
 
     user.balance += usdtEquivalent
+    user.lastDepositMethod = 'LTC'
     await user.save()
 
     await Transaction.create({
@@ -195,6 +196,7 @@ router.post('/deposit', authenticate, async (req: Request, res: Response) => {
     }
 
     user.balance += amount
+    user.lastDepositMethod = 'USDT'
     await user.save()
 
     await Transaction.create({
@@ -248,7 +250,7 @@ router.post('/faucet', authenticate, async (req: Request, res: Response) => {
 
 router.post('/withdraw', authenticate, async (req: Request, res: Response) => {
   try {
-    const { amount, address, tipAmount = 0 } = req.body
+    const { amount, address, tipAmount = 0, network = 'USDT' } = req.body
 
     if (!amount || amount <= 0) {
       return res.status(400).json({ message: 'Invalid amount' })
@@ -257,6 +259,13 @@ router.post('/withdraw', authenticate, async (req: Request, res: Response) => {
     const user = await User.findById(req.body.userId)
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
+    }
+
+    // Enforce withdrawal network matches last deposit
+    if (user.lastDepositMethod && user.lastDepositMethod !== network) {
+      return res.status(400).json({ 
+        message: `You deposited via ${user.lastDepositMethod}. Please withdraw using ${user.lastDepositMethod}.` 
+      })
     }
 
     const nairaValue = (amount + tipAmount) * 1550
@@ -278,6 +287,7 @@ router.post('/withdraw', authenticate, async (req: Request, res: Response) => {
       amount,
       address,
       tipAmount, // Platform tip (optional)
+      network: network as 'USDT' | 'LTC',
       status: 'pending',
     })
 

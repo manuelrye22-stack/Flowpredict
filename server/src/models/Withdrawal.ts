@@ -4,7 +4,8 @@ export interface IWithdrawal extends Document {
   userId: mongoose.Types.ObjectId
   amount: number
   tipAmount?: number // Optional tip to platform
-  address: string // TRC-20 address
+  address: string // TRC-20 or LTC address
+  network: 'USDT' | 'LTC'
   status: 'pending' | 'approved' | 'rejected' | 'completed' | 'failed'
   txHash?: string
   requestedAt: Date
@@ -30,6 +31,11 @@ const WithdrawalSchema = new Schema<IWithdrawal>({
   address: {
     type: String,
     required: true,
+  },
+  network: {
+    type: String,
+    enum: ['USDT', 'LTC'],
+    default: 'USDT',
   },
   status: {
     type: String,

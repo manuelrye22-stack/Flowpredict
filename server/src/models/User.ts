@@ -16,6 +16,8 @@ export interface IUser extends Document {
     read: boolean
     createdAt: Date
   }>
+  preferredNetwork?: 'USDT' | 'LTC'
+  lastDepositMethod?: 'USDT' | 'LTC'
 }
 
 const UserSchema = new Schema<IUser>({
@@ -51,6 +53,14 @@ const UserSchema = new Schema<IUser>({
     read: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now }
   }],
+  preferredNetwork: {
+    type: String,
+    enum: ['USDT', 'LTC'],
+  },
+  lastDepositMethod: {
+    type: String,
+    enum: ['USDT', 'LTC'],
+  },
 }, {
   timestamps: true,
 })
