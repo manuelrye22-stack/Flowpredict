@@ -1,15 +1,8 @@
 import axios from 'axios'
 
-let API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
-
-// Dynamic fallback: use current origin API if env var not set or is localhost
-if (typeof window !== 'undefined') {
-  if (!process.env.NEXT_PUBLIC_API_URL || API_URL.includes('localhost')) {
-    const currentOrigin = window.location.origin
-    API_URL = `${currentOrigin}/api`
-    console.log('Using dynamic API URL:', API_URL)
-  }
-}
+// Railway server URL - the Express API runs on a separate project
+const SERVER_URL = 'https://flowpredict-production.up.railway.app'
+let API_URL = process.env.NEXT_PUBLIC_API_URL || `${SERVER_URL}/api`
 
 console.log('API URL configured to:', API_URL)
 
