@@ -7,6 +7,7 @@ import User from '../models/User.js'
 import Transaction from '../models/Transaction.js'
 import Withdrawal from '../models/Withdrawal.js'
 import Deposit from '../models/Deposit.js'
+import { sendLTC, isLTCWithdrawConfigured } from '../lib/ltc.js'
 
 const router = Router()
 
@@ -377,12 +378,17 @@ router.post('/withdrawals/:id/process', authenticate, async (req: Request, res: 
       user.balance -= withdrawal.amount
       await user.save()
 
-      // Update withdrawal
+      // Update withdrawal (manual tx hash still required for LTC)
       withdrawal.status = 'approved'
       withdrawal.txHash = txHash || ''
       withdrawal.processedAt = new Date()
       withdrawal.processedBy = adminId
-      withdrawal.notes = notes || 'Approved'
+      if (withdrawal.network === 'LTC') {
+        const ltcAmount = withdrawal.amount / (EXCHANGE_RATES.USDT / EXCHANGE_RATES.LTC)
+        withdrawal.notes = notes || `Manual send needed: ${ltcAmount} LTC to ${withdrawal.address}`
+      } else {
+        withdrawal.notes = notes || 'Approved'
+      }
       await withdrawal.save()
 
       // Update transaction status
