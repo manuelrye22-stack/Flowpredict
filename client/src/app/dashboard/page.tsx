@@ -135,7 +135,7 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
             <h3 className="text-lg font-semibold mb-2">Create Bet</h3>
             <p className="text-gray-600 text-sm mb-4">Start a new prediction</p>
             <Link
@@ -145,7 +145,7 @@ export default function Dashboard() {
               Create
             </Link>
           </div>
-          <div className="bg-white rounded-xl shadow p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
             <h3 className="text-lg font-semibold mb-2">💳 Wallet</h3>
             <p className="text-gray-600 text-sm mb-4">Deposit, withdraw, faucet</p>
             <Link
@@ -155,7 +155,7 @@ export default function Dashboard() {
               Go to Wallet
             </Link>
           </div>
-          <div className="bg-white rounded-xl shadow p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
             <h3 className="text-lg font-semibold mb-2">Browse Bets</h3>
             <p className="text-gray-600 text-sm mb-4">Find bets to accept</p>
             <Link
@@ -165,7 +165,7 @@ export default function Dashboard() {
               Browse
             </Link>
           </div>
-          <div className="bg-white rounded-xl shadow p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
             <h3 className="text-lg font-semibold mb-2">📊 Stats</h3>
             <p className="text-gray-600 text-sm mb-4">
               Win rate, profit/loss
@@ -177,7 +177,7 @@ export default function Dashboard() {
               View Stats
             </Link>
           </div>
-          <div className="bg-white rounded-xl shadow p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
             <h3 className="text-lg font-semibold mb-2">🏆 Leaderboard</h3>
             <p className="text-gray-600 text-sm mb-4">Top predictors</p>
             <Link
@@ -187,7 +187,7 @@ export default function Dashboard() {
               View Rankings
             </Link>
           </div>
-          <div className="bg-white rounded-xl shadow p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
             <h3 className="text-lg font-semibold mb-2">Admin</h3>
             <p className="text-gray-600 text-sm mb-4">Manage all bets</p>
             <Link

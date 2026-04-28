@@ -108,7 +108,7 @@ export default function Leaderboard() {
         </div>
 
         {users.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-lg p-12 text-center">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-12 text-center">
             <p className="text-gray-500 text-lg">No resolved bets yet!</p>
             <p className="text-gray-400 mt-2">Create some bets and start predicting to appear on the leaderboard.</p>
           </div>
@@ -118,7 +118,7 @@ export default function Leaderboard() {
             {users.slice(0, 3).map((user, idx) => (
               <div 
                 key={user.userId} 
-                className={`bg-white rounded-xl shadow-lg p-6 flex items-center ${
+                className={`bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex items-center ${
                   idx === 0 ? 'border-4 border-yellow-400' : 
                   idx === 1 ? 'border-4 border-gray-300' : 
                   idx === 2 ? 'border-4 border-amber-600' : ''
@@ -141,7 +141,7 @@ export default function Leaderboard() {
 
             {/* Rest of users */}
             {users.slice(3).map((user, idx) => (
-              <div key={user.userId} className="bg-white rounded-lg shadow p-4 flex items-center">
+              <div key={user.userId} className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 flex items-center">
                 <div className="text-xl font-bold w-12 text-gray-500">
                   #{idx + 4}
                 </div>

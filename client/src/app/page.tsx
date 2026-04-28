@@ -329,7 +329,7 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {topUsers.map((user: any, index: number) => (
-              <div key={index} className="bg-white rounded-xl p-6 shadow-md flex items-center gap-4">
+              <div key={index} className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md flex items-center gap-4">
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl ${
                   index === 0 ? 'bg-yellow-100 text-yellow-600' : index === 1 ? 'bg-gray-100 text-gray-600' : 'bg-orange-100 text-orange-600'
                 }`}>
@@ -355,7 +355,7 @@ export default function Home() {
             <h2 className="text-3xl font-bold text-gray-900">Simple Pricing</h2>
           </div>
           <div className="max-w-2xl mx-auto">
-            <div className="bg-white border-2 border-nigeria-green rounded-xl p-8 shadow-lg">
+            <div className="bg-white dark:bg-gray-800 border-2 border-nigeria-green rounded-xl p-8 shadow-lg">
               <div className="text-center">
                 <h3 className="text-2xl font-bold mb-4">Free for Most Bets</h3>
                 <p className="text-4xl font-bold text-nigeria-green mb-2">₦0</p>
@@ -405,7 +405,7 @@ export default function Home() {
       {/* Quick Create Bet Modal */}
       {showQuickCreate && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold">⚡ Quick Create Bet</h3>
               <button onClick={() => setShowQuickCreate(false)} className="text-gray-500 hover:text-gray-700">
